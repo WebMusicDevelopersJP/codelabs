@@ -1,0 +1,645 @@
+<template>
+    <codelab-pack label="Web Audio API" 
+                  feedback_link="https://github.com/ryoyakawai/x-webmidi/issues"
+                  category=""
+                  environment="">
+
+      <!-- 1 -->
+      <codelab-article step_label="Overview" duration="1:00">
+        <h2>Background</h2>
+        <p class="top">Learn basic feature of Web Aduio API with some development.</p>
+        
+        <h2>Tools to run this Codelab</h2>
+        <ul class="top">
+          <li><img src="./images/chrome_flat_by_packrobottom.png" width="16px" class="middle"><a href="//www.google.co.jp/chrome/browser/" target="_blank">Google Chrome</a> 43+</li>
+          <li><img src="./images/chrome_dev_editor-logo.png" width="16px" class="middle"><a href="https://chrome.google.com/webstore/detail/chrome-dev-editor-develop/pnoffddplpippgcfjdhbmhkofpnaalpg" target="_blank">Chrome Dev Editor</a></li>
+        </ul>
+        <h2>Acknowledgement</h2>
+        <ul class="top" style="list-style-type: none; padding-left:20px;">
+          <li>Reffed a article of <a href="http://www.g200kg.com/jp/docs/webaudio/" target="_blank">「Instruction of Web Audio API」</a> composed by <a href="//twitter.com/g200kg" target="_blank">@g200kg</a> a lot, and also using some of the contents, sample codes and diagrams from that article. Thank you very much for sharing those contents to use here.</li>
+        </ul>        
+      </codelab-article>
+
+      <!-- 2 -->
+      <codelab-article step_label="Preparing Development Environment" duration="1:00">
+        <h2><img src="./images/chrome_flat_by_packrobottom.png" width="20" class="middle">Installing Google Chrome</h2>
+        <p class="top">Download suitable package for your platform from <a href="//www.google.co.jp/chrome/browser/" target="_blank">here</a>. And click/tap "Add to Chrome" to install.</p>
+
+        <h2><img src="./images/chrome_dev_editor-logo.png" width="20" class="middle">Installing Chrome Dev Editor</h2>
+        <p class="top">Please open <a href="//chrome.google.com/webstore/detail/chrome-dev-editor-develop/pnoffddplpippgcfjdhbmhkofpnaalpg" target="_blank">this URL</a> by Google Chrome, and install the Chrome Dev Editor.</p>
+
+        <h2><i class="material-icons middle">folder_open</i>Creating directory where to build application.</h2>
+        <p>Launch Chrome Dev Editor<br>Input <code>chrome://apps</code> in URL bar in Chrome, and Click <b>Chrome Dev Editor</b> to launch Chrome Dev Editor.
+          <div class="flex-center">
+            <img src="./images/webaudio-launch.png" width="420" class="bordered">
+          </div>
+        </p>
+
+        <p>
+            Specify the working directory in <span class="input-font">[CHOOSE FOLDER]</span> area in the dialog of popping up when to click/tap the <i class="material-icons middle" style="color:rgba(210, 63, 49, 1);">add_circle</i> button in right corner in below of left pain.<br>
+          <span class="notice-01">※ First time in launching Chrome Deve Editor, the pop up to specify "Project Name" and "Script type" appears. In here, specifying <span class="input-font">~/Documents/chrome_dev_editor/</span> for that.</span> 
+          <div class="flex-center">
+            <img src="./images/webaudio-00.png" width="420" class="bordered">
+          </div>
+          <p style="margin-bottom:2px;">Specifying and selected these values in here.</p>
+          <div class="sample-input-01-blue" style="margin-top:2px;">
+              Project Name: <span class="input-font">test_webaudioapi</span><br>
+              Project type: <span class="input-font">JavaScript web app</span>
+          </div>
+        </p>
+      </codelab-article>
+
+      <!-- 3 -->
+      <codelab-article step_label="Play sound" duration="5:00">
+        <p>Play sound by using Oscillator Node.</p>
+
+        <p>Copy & paste code below to <span class="input-font">index.html</span>.</p>
+
+        <codelab-snippet>
+&lt;button onclick="Play()">Play&lt;/button>
+&lt;script type="text/javascript">
+var audioctx = new AudioContext();
+var osc = audioctx.createOscillator();
+osc.connect(audioctx.destination);
+function Play() {
+  osc.start(0);
+}
+&lt;/script></codelab-snippet>
+        
+        <p>Click/tap play button <i class="material-icons middle">play_arrow</i> in left top of Chrome Dev Editor to start the application.</p>
+        <div class="flex-center">
+          <img src="./images/webaudio-01.png" width="520" class="bordered">
+        </div>
+
+        <p>Sucess when playing sound with clicking/tapping <button id="step3">Play</button> button in the brower window. In this code does NOT care to stop playing sound. Please reload this page to stop the sound.</p>
+
+        <p>Creating Node Graph by following process below.</p>
+        <ul style="list-style-type: decimal">
+          <li>Creating AudioContext by <code>new AudioContext();</code>.</li>
+          <li>Creating Oscillator by <code>audioctx.createOscillator();</code>.</li>
+          <li>Complete Node Graph by connecting to <span class="input-font">destination</span> by <code>osc.connect(audioctx.destination);</code>.</li>
+          <li>Start Oscillator by clicking/tapping button.</li>
+        </ul>
+
+        <p>Oscillator is the one of the primitive parts in Web Audio API, and those primitive parts are named "Node". Lots of these kinds of primitive nodes are prepared by default. Basically, a way of creating application with Web Audio API is by connecting these node each other, and creates Node Graph.</p>
+        <p>And the end point of Node Graph is named <span class="input-font">destination (destination node)</span>. The destination node is automatically created when AudioContext is constructed. Node Graph is ready to play sound by connecting to the destination node.</p>
+
+        <p>By the way, Node Graph which has created is just like this diagram.</p>
+        <div class="flex-center">
+          <img src="./images/osc1.png" class="bordered">
+        </div>
+        <p><span class="notice-01">(From next step, omit explanation how to run the application.)</span></p>
+      </codelab-article>
+
+
+      <!-- 4 -->
+      <codelab-article step_label="Swinging Oscillator" duration="5:00">
+
+        <p>Oscillatro is able to create sound, but the sound is a bit monotone. So let's try to swing the oscillator by another oscillator.</p>
+        <p>Delete code added in previous step from <span class="input-font">index.html</span>, and add new code below to <span class="input-font">index.html</span>.</p>
+        <codelab-snippet>
+&lt;table>
+  &lt;tr>&lt;td>LFO Freq : &lt;/td>&lt;td>&lt;input type="text" size="10" id="lfofreq" value="5"/>&lt;/td>&lt;/tr>
+  &lt;tr>&lt;td>Depth : &lt;/td>&lt;td>&lt;input type="text" size="10" id="depth" value="10"/>&lt;/td>&lt;/tr>
+  &lt;tr>&lt;td>VCO Freq : &lt;/td>&lt;td>&lt;input type="text" size="10" id="vcofreq" value="440"/>&lt;/td>&lt;/tr>
+&lt;/table>
+&lt;br/>
+&lt;button onclick="Setup()">Set&lt;/button>&lt;br/>
+&lt;script type="text/javascript">
+var audioctx = new AudioContext();
+var play = 0;
+var vco = audioctx.createOscillator();
+var lfo = audioctx.createOscillator();
+var depth = audioctx.createGain();
+vco.connect(audioctx.destination);
+lfo.connect(depth);
+depth.connect(vco.frequency); // &lt;== connect to frequency parameter of vco
+function Setup() {
+  if(play == 0) {
+    play = 1;
+    vco.start(0);
+    lfo.start(0);
+  }
+  vco.frequency.value = parseFloat(document.getElementById("vcofreq").value);
+  lfo.frequency.value = parseFloat(document.getElementById("lfofreq").value);
+  depth.gain.value = parseFloat(document.getElementById("depth").value);
+}
+&lt;/script></codelab-snippet>
+        
+        <p class="bottom5px">Application is working properly when this is reproduced. Sound is played by clicking <button id="step4">Set</button> button. And then clicking <button id="step4-set">Set</button> button with changing parameters in the textboxes reflects to the swing of the sound.</p>
+        <ul class="top">
+          <li><span class="input-font">VCO Freq = <span id="step4vcofreq">440</span></span></li> 
+          <li><span class="input-font">LFO Freq = <span id="step4lfofreq">5</span></span></li>
+          <li><span class="input-font">Depth = <span id="step4depth">10</span></span></li>
+        </ul>
+        <p class="bottom5px">Explanation for new words.</p>
+        <ul class="top">
+          <li><span class="input-font">VCO</span> ： [Voltage-Controlled Oscillator] Oscillator which Oscillator which controls frequency of oscillator by voltage.</li>
+          <li><span class="input-font">LFO</span> ： [Low Frequency Oscillator Oscillator] Low frequency Oscillator</li>
+        </ul>
+
+        <p>Basic idea is that by controlling frequency of oscillator, which making sound, by another oscillator makes swing of the sound. And the width of the swing is called <span class="input-font">depth</span>.</p>
+        <p>About Node Graph of this step.</p>
+        <ul style="list-style-type: decimal">
+          <li>Creating AudioContext by <code>new AudioContext();</code> </li>
+          <li>Creating Oscillator which makes sounds by <code>audioctx.createOscillator();</code></li>
+          <li>Creating Oscillator which controls frequency of the oscillator making sounds by <code>audioctx.createOscillator();</code> </li>
+          <li>Creating Node to change depth parameter by <code>audioCtx.createGain();</code></li>
+          <li>Connecting to <span class="input-font">audioctx.destination</span> to completed Node Graph by <code>vco.connect(audioctx.destination);</code> </li>
+          <li>Connecting to depth for the swing by <code>lfo.connect(depth);</code></li>
+          <li>Connecting to Oscillator which making sound by <code>depth.connect(vco.frequency);</code></li>
+          <li>Starting Oscillator and updating parameter by clicking/tapping button.</li>
+        </ul>
+
+        <p>Node Graph which has created in this step is just like this diagram.</p>
+        <div class="flex-center">
+          <img src="./images/vibrato.png" class="bordered">
+        </div>
+        <br>
+      </codelab-article>
+
+
+      <!-- 5 -->
+      <codelab-article step_label="Playing Audio File" duration="7:00">
+        <p>Download <a href="contents/snare.wav"><span class="input-font">snare.wav</span></a>, and drop the downloaded file into "Project name("test_webaudioapi" in here) area" of left pane of Chrome Dev Editor.</p>
+        <div class="flex-center">
+          <img src="./images/webaudio-02.png" width="580" class="bordered">
+        </div>
+
+        <p>Delete code added in previous step from <span class="input-font">index.html</span>, and add new code below to <span class="input-font">index.html</span>.</p>
+        <codelab-snippet>
+&lt;button onclick="Play()" id="playsound" disabled>Play&lt;/button>
+&lt;script type="text/javascript">
+var audioctx = new AudioContext();
+var buffer = null;
+LoadSample(audioctx, "./snare.wav");
+function Play() {
+  var src = audioctx.createBufferSource();
+  src.buffer = buffer;
+  src.connect(audioctx.destination);
+  src.start(0);
+}
+function LoadSample(ctx, url) {
+  var req = new XMLHttpRequest();
+  req.open("GET", url, true);
+  req.responseType = "arraybuffer";
+  req.onload = function() {
+    if(req.response) {
+      ctx.decodeAudioData(req.response,function(b){buffer=b;},function(){});
+      document.querySelector("button#playsound").removeAttribute("disabled");
+    }
+  }
+  req.send();
+}
+&lt;/script></codelab-snippet>
+        
+        <p>Application is successfully created when to be heard snare drum sound by clicking/tapping <button id="step5">Play</button> button.</p>
+
+        <p>Algorithm is below.</p>
+        <ul style="list-style-type: decimal">
+          <li>Fetching file by <code>XMLHttpRequest();</code> from server</li>
+          <li>Copy sound data to buffer is prepared by <code>audioctx.createBufferSource();</code></li>
+          <li>Connecting to <span class="input-font">audioctx.destination</span> to complete Node Graph by<code>src.connect(audioctx.destination);</code> </li>
+          <li>Play sound in the buffer by clicking/tapping button</li>
+        </ul>
+
+        <p>Node Graph which has created in this step is just like this diagram.</p>
+        <div class="flex-center">
+          <img src="./images/buffersource.png" class="bordered">
+        </div>
+        <br>
+      </codelab-article>
+
+      <!-- 6 -->
+      <codelab-article step_label="Applying Delay Effect" duration="5:00">
+        <p>Using audio file that has long duration than audio file that is used at previous step.<br>
+          So, please download <a href="contents/loop.wav"><span class="input-font">loop.wav</span></a>, and  drop the downloaded file into "Project name("test_webaudioapi" in here) area" of left pane of Chrome Dev Editor.</p>
+        <div class="flex-center">
+          <img src="./images/webaudio-02.png" width="580" class="bordered">
+        </div>
+
+        <p>Next, delete code added in previous step from <span class="input-font">index.html</span>, and add HTML code below to <span class="input-font">index.html</span> at first.</p>
+        <codelab-snippet>
+&lt;button id="playsound" disabled>Play&lt;/button>&lt;br/>
+&lt;table>
+  &lt;tr>&lt;td>Bypass :&lt;/td>&lt;td>&lt;input id="bypass" type="checkbox"/>&lt;/td>&lt;/tr>
+  &lt;tr>&lt;td>Time : &lt;/td>&lt;td>&lt;input type="text" size="8" id="time" value="0.25"/>&lt;/td>&lt;/tr>
+  &lt;tr>&lt;td>Feedback : &lt;/td>&lt;td>&lt;input type="text" size="8" id="feedback" value="0.4"/>&lt;/td>&lt;/tr>
+  &lt;tr>&lt;td>Mix : &lt;/td>&lt;td>&lt;input type="text" size="8" id="mix" value="0.4"/>&lt;/td>&lt;/tr>
+&lt;/table></codelab-snippet>
+        
+        <p>At this step, diagram below is the target Node Graph to create.</p>
+        <div class="flex-center">
+          <img src="./images/delay1.png" class="bordered">
+        </div>
+
+        <p class="bottom5px">Explanation for new words that has just appeared.</p>
+        <ul class="top">
+          <li><span class="input-font">Dry</span> ： A sound that is originaly input.</li>
+          <li><span class="input-font">Wet</span> ： A sound that is applied audio effect to original input.</li>
+          <li><span class="input-font">Audio Effect</span> ： Creating different sound by applying something. For example, Delay is one of the audio effect that records an input signal to an audio storage medium, and then plays it back after a period of time, Reverb is also one of the audio effect that is the persistence of sound after a sound is produced.</li>
+        </ul>
+
+        <p class="bottom5px">Roles of these nodes</p>
+        <ul class="top">
+          <li><span class="input-font">Gain(Dry)</span> and <span class="input-font">Gain(Wet)</span> : Control the ratio of original sound and audio effected sound.</li>
+          <li><span class="input-font">Delay</span> ： Playback sound after some duration.</li>
+          <li><span class="input-font">Gain(Feedback)</span> ： Feedback delay effected sound to original source.</li>
+        </ul>
+        
+        <codelab-snippet>
+&lt;script type="text/javascript">
+  var audioctx = new AudioContext();
+ 
+  var buffer = null;
+  LoadSample(audioctx, "./loop.wav");
+  var src = null;
+  var input = audioctx.createGain(); 
+  var delay = audioctx.createDelay(); 
+  var wetgain = audioctx.createGain(); 
+  var drygain = audioctx.createGain(); 
+  var feedback = audioctx.createGain(); 
+
+  input.connect(delay);
+  input.connect(drygain);
+  delay.connect(wetgain);
+  delay.connect(feedback);
+  feedback.connect(delay);
+  wetgain.connect(audioctx.destination);
+  drygain.connect(audioctx.destination);
+
+  function LoadSample(ctx, url) {
+    var req = new XMLHttpRequest();
+    req.open("GET", url, true);
+    req.responseType = "arraybuffer";
+    req.onload = function () {
+      if(req.response) {
+        ctx.decodeAudioData(req.response,function(b){buffer=b;},function(){});
+        document.querySelector("button#playsound").removeAttribute("disabled");
+      }
+    }
+    req.send();
+  }
+&lt;/script></codelab-snippet> 
+
+        <p class="bottom5px">Explanation of Node Graph.</p>
+        <ul class="top">
+          <li>Connect input to <span class="input-font">Delay</span> and <span class="input-font">Gain(Dry)</span>(Dry側のGain) </li>
+          <li>Connect output from <span class="input-font">Delay</span> to <span class="input-font">Gain(Wet)</span></li>
+          <li>Connect output from <span class="input-font">Delay</span> to <span class="input-font">Gain(Feedback)</span></li>
+          <li>Connect output from <span class="input-font">Gain(Feedback)</span> to <span class="input-font">Delay</span></li>
+        </ul>
+
+        <p class="bottom5px">Finally, write event handler for clicking/tapping button.<br>
+          From the beginning of this codelab Event Handlers are write inside of HTML, but from here Event Handlers are written by JavaScript.</p>
+        <codelab-snippet>
+&lt;script type="text/javascript">
+  document.querySelector("button#playsound").addEventListener("click", function(event){
+    var label; 
+    if(event.target.innerHTML=="Stop") {
+      src.stop(0);
+      label="Start";
+    } else {
+      src = audioctx.createBufferSource();
+      src.buffer = buffer;
+      src.loop = true;
+      src.connect(input);
+      src.start(0);
+      label="Stop";
+    }
+    event.target.innerHTML=label;
+  });
+  document.querySelector("input#bypass").addEventListener("change", Setup);
+  document.querySelector("input#time").addEventListener("change", Setup);
+  document.querySelector("input#feedback").addEventListener("change", Setup);
+  document.querySelector("input#mix").addEventListener("change", Setup);
+
+  function Setup() {
+    var bypass = document.getElementById("bypass").checked;
+    delay.delayTime.value = parseFloat(document.getElementById("time").value);
+    feedback.gain.value = parseFloat(document.getElementById("feedback").value);
+    var mix = parseFloat(document.getElementById("mix").value);
+    if(bypass) mix = 0;
+      wetgain.gain.value = mix;
+      drygain.gain.value = 1 - mix;
+  }
+  Setup();
+&lt;/script></codelab-snippet>
+
+        <p>After adding 3 of above, run the application. Clicking/tapping <button id="step6">Start</button> button makes sound playing, and changing parameter and check/uncheck the chackbox of ByPass makes on/off delay effect.tapping button makes sound playing, and changing parameter and check/uncheck the checkbox of ByPass makes changing the depth and on/off of delay effect.</p>
+        <ul class="top">
+          <li><span class="input-font">Bypass: <input type="checkbox" id="step6bypass"></span></li> 
+        </ul>
+
+        <p>Adding nodes below to obtain each audio effect by same way of adding delay node.</p>
+        <ul class="top">
+          <li><span class="input-font">PannerNode</span> ： to allocate sound to each speakers</li> 
+          <li><span class="input-font">BiquadFilterNode</span> ： fillter a sound （ e.g: low-pass, high-pass, etc）</li> 
+          <li><span class="input-font">GainNode</span> ： control amplitude （controlling volume）</li> 
+        </ul>
+
+      </codelab-article>
+
+
+      <!-- 7 -->
+      <codelab-article step_label="Visualizing a Sound File" duration="7:00">
+        <p><span class="input-font">Analyser node</span> is providing users to visualizing sound. With this node, visualizing sound is really easy. Let's visualize sound file. </p>
+        <p>Use <a href="contents/loop.wav"><span class="input-font">loop.wav</span></a>, which is used in previous step, to analyse sound.
+          <p>If you have not downloaded this file, please download from <a href="contents/loop.wav"><span class="input-font">here</span></a>, and drop the downloaded file into "Project name("test_webaudioapi" in here) area" of left pane of Chrome Dev Editor.</p>
+        <div class="flex-center">
+          <img src="./images/webaudio-02.png" width="580" class="bordered">
+        </div>
+
+        <p>Next, delete code added in previous step from <span class="input-font">index.html</span>, and add HTML code below to <span class="input-font">index.html</span> at first.</p>
+        <codelab-snippet>
+&lt;button id="playsound" disabled>Play&lt;/button>&lt;br/>
+&lt;table>
+  &lt;tr>&lt;td>Frequency/TimeDomain : &lt;/td>&lt;td>&lt;select id="mode" >&lt;option>Frequency&lt;/option>&lt;option>TimeDomain&lt;/option>&lt;/select>&lt;/td>&lt;/tr>
+  &lt;tr>&lt;td>SmoothingTimeConstant : &lt;/td>&lt;td>&lt;input type="text" id="smoothing" value="0.9"/>&lt;/td>&lt;/tr>
+  &lt;tr>&lt;td>MinDecibels : &lt;/td>&lt;td>&lt;input type="text" id="min"/>&lt;/td>&lt;/tr>
+  &lt;tr>&lt;td>MaxDecibels : &lt;/td>&lt;td>&lt;input type="text" id="max"/>&lt;/td>&lt;/tr>
+&lt;/table>
+&lt;br/>&lt;br/>
+&lt;canvas id="graph" width="512" height="256">&lt;/canvas></codelab-snippet>
+        
+        <p>Node Graph is below, since visualize input source without adding any audio effects.<br>
+          Adding <span class="input-font">Analyser</span> node after <span class="input-font">BufferSource</span> node.
+        </p>
+        <div class="flex-center">
+          <img src="./images/analyser.png" class="bordered">
+        </div>
+
+        <p class="bottom5px">Adding process of drawing a graph from numbers which is provided from <span class="input-font">Analyser</span> node.</p>
+        <codelab-snippet>
+&lt;script type="text/javascript">
+var audioctx = new AudioContext();
+
+var buffer = null;
+LoadSample(audioctx, "./loop.wav");
+var src = null;
+function LoadSample(ctx, url) {
+    var req = new XMLHttpRequest();
+    req.open("GET", url, true);
+    req.responseType = "arraybuffer";
+    req.onload = function() {
+        if(req.response) {
+            ctx.decodeAudioData(req.response,function(b){buffer=b;},function(){});
+            document.querySelector("button#playsound").removeAttribute("disabled");
+        }
+    }
+    req.send();
+}
+
+var mode = 0;
+var timerId;
+var analyser = audioctx.createAnalyser();
+analyser.fftSize = 1024;
+document.getElementById("min").value = analyser.minDecibels;
+document.getElementById("max").value = analyser.maxDecibels;
+var ctx = document.getElementById("graph").getContext("2d");
+
+function DrawGraph() {
+    ctx.fillStyle = "rgba(34, 34, 34, 1.0)";
+    ctx.fillRect(0, 0, 512, 256);
+    ctx.strokeStyle="rgba(255, 255, 255, 1)";
+    var data = new Uint8Array(512);
+    if(mode == 0) analyser.getByteFrequencyData(data); //Spectrum Data
+    else analyser.getByteTimeDomainData(data); //Waveform Data
+    if(mode!=0) ctx.beginPath();
+    for(var i = 0; i < 256; ++i) {
+        if(mode==0) {
+            ctx.fillStyle = "rgba(204, 204, 204, 0.8)";
+            ctx.fillRect(i*2, 256 - data[i], 1, data[i]);
+        } else {
+            ctx.lineTo(i*2, 256 - data[i]);
+        }
+    }
+    if(mode!=0) {
+        ctx.stroke();
+    }
+    requestAnimationFrame(DrawGraph);
+}
+timerId=requestAnimationFrame(DrawGraph);
+
+function Setup() {
+    mode = document.getElementById("mode").selectedIndex;
+    analyser.minDecibels = parseFloat(document.getElementById("min").value);
+    analyser.maxDecibels = parseFloat(document.getElementById("max").value);
+    analyser.smoothingTimeConstant = parseFloat(document.getElementById("smoothing").value);
+}
+Setup();
+&lt;/script></codelab-snippet>
+
+        <p>
+          Drawing by <code>DrawGraph()</code>, and also this method updated the drawing when parameter in the windows is updated. Explation for drawing.</p>
+        <ul style="list-style-type: decimal">
+          <li>Create <span class="input-font">analyser</span> by <code>createAnalyser();</code></li>
+          <li>Specify the data size of FFT as <span class="input-font">fftSize</span></li>
+          <li>Get values from <span class="input-font">Analyser</span> node with running animation loop by <code>requestAnimationFrame();</code> makes updating drawing on <span class="input-font">canvas</span> in each iteration to visualize values.</li>
+        </ul>
+
+        <p class="bottom5px">Finally, add event handler for when clicking/tapping button.</p>
+        <codelab-snippet>
+&lt;script type="text/javascript">
+document.querySelector("button#playsound").addEventListener("click", function(event){
+    var label; 
+    if(event.target.innerHTML=="Stop") {
+        src.stop(0);
+        cancelAnimationFrame(timerId);
+        label="Start";
+    } else {
+        src = audioctx.createBufferSource();
+        src.buffer = buffer;
+        src.loop = true;
+        src.connect(audioctx.destination);
+        src.connect(analyser);
+        src.start(0);
+        label="Stop";
+    }
+    event.target.innerHTML=label;
+});
+document.querySelector("select#mode").addEventListener("change", Setup);
+document.querySelector("input#smoothing").addEventListener("change", Setup);
+document.querySelector("input#min").addEventListener("change", Setup);
+document.querySelector("input#max").addEventListener("change", Setup);
+&lt;/script></codelab-snippet>
+        
+        <p>After adding these 3 blocks of code, run the application. Clicking/tapping <button id="step7">Start</button> button to play songs and displaying graph in <span class="input-font">canvas</span>. And be updated graphs with changing parameters of <span class="input-font">Frequency/TimeDomain</span>. <br>
+          <span class="notice-01">※ In this page, clicking/tapping graph area makes changing the type(<span class="input-font">Frequency/TimeDomain</span>) of the graph.</span> 
+        </p>
+          
+        <div class="flex-center">
+          <canvas id="step7canvas" class="step7" width="512" height="256"></canvas>
+        </div>
+
+      </codelab-article>
+
+      <!-- 8 -->
+      <codelab-article step_label="Visualizing Mic Input" duration="6:00">
+        <p>In this step, visualizing the sound from Mic(realtime input).</p>
+
+        <p>Here, adding code to previous step. So do not delete the code, please.<br/>
+        Add HTML to <span class="input-font">index.html</span>. Adding HTML in where you want to add.(place is not important)</p>
+        <codelab-snippet>
+&lt;button id="startmic">Start Mic&lt;/button>&lt;br/></codelab-snippet>
+
+        <p>Next, adding JavaScript code.  Same as HTML that is added previously, place to add is not important, so please add them where you want to add.</p>
+        <codelab-snippet>
+&lt;script type="text/javascript">
+var getUserMedia = navigator.getUserMedia ? 'getUserMedia' :
+    navigator.webkitGetUserMedia ? 'webkitGetUserMedia' :
+    navigator.mozGetUserMedia ? 'mozGetUserMedia' :
+    navigator.msGetUserMedia ? 'msGetUserMedia' :
+    undefined;
+var astream, micsrc;
+var conditions={audio:true, video:false};
+function Mic() {
+    navigator[getUserMedia](
+        conditions,
+        function(stream) {
+            astream=stream;
+            micsrc=audioctx.createMediaStreamSource(stream);
+            micsrc.connect(audioctx.destination);
+            micsrc.connect(analyser);
+        },
+        function(e) { console.error(e); }
+    );
+}
+
+// event handler
+document.querySelector("button#startmic").addEventListener("click", function(event){
+    var label;
+    if(event.target.innerHTML=="Start Mic") {
+        Mic();
+        label="Stop Mic";
+    } else {
+        astream.stop();
+        label="Start Mic";
+    }
+    event.target.innerHTML=label;
+});
+&lt;/script></codelab-snippet>
+
+        <p>Node Graph is below, since visualize mic input without adding any audio effects.<br>
+        <div class="flex-center">
+          <img src="./images/analyser_mic.png" class="bordered">
+        </div>
+
+        <p>Algorithm is below.</p>
+        <ul style="list-style-type: decimal">
+          <li>Get mic input by <code>getUserMedia();</code>.</li>
+          <li>Get Audio Stream from <span class="input-font">stream</span> by <code>audioctx.createMediaStreamSource(stream)</code></li>
+          <li>Connect Audio Stream that is just obtained to <span class="input-font">analyser</span> by <code>micsrc.connect(audioctx.destination);</code></li>
+          <li>Connect Audio Stream that is just obtained to <span class="input-font">audioctx.destination</span> by <code>micsrc.connect(audioctx.destination);</code> to complete Node Graph</li>
+          <li>Clicking/tapping button to start visualizing mic input.</li>
+        </ul>
+        
+        <p>Run application by clicking/tapping <button id="step8">Start Mic</button>. Changing of parameters(e.g. <span class="input-font">Frequency/TimeDomain</span>) make graph style update.<br>
+          <span class="notice-01">※ in here, clicking/tapping graph makes changing the graph style.</span> 
+        </p>
+          
+        <div class="flex-center">
+          <canvas id="step8canvas" class="step7" width="512" height="256"></canvas>
+        </div>
+
+      </codelab-article>
+
+
+      <!-- 9 -->
+      <codelab-article step_label="Using Convolution" duration="5:00">
+        <p>Adding audio effect by convoluting source audio input/file and impulse response audio file.<br>
+          It sounds difficult, but Web Audio API is providing <span class="input-font">ConvolverNode</span> by default to make convolution by really easy way.
+        </p>
+
+        <p>Download impulse response audio file form here <a href="contents/ir/s1_r1_bd.wav"><span class="input-font">s1_r1_bd.wav</span></a>, and drop the downloaded file into "Project name("test_webaudioapi" in here) area" of left pane of Chrome Dev Editor.</p>
+        <div class="flex-center">
+          <img src="./images/webaudio-02.png" width="580" class="bordered">
+        </div>
+        <p>
+          <span class="notice-01">※ The file just downloaded(<span class="input-font">s1_r1_bd.wav</span>) is only provided in <a href="http://www.acoustics.hut.fi/projects/poririrs/" taeget="_blank">here</a>, and is provided for free when the use case is in non-commerical. </span> 
+        </p>
+
+        <p>Delete code added in previous step from <span class="input-font">index.html</span>, and add new HTHL below to <span class="input-font">index.html</span>.(place is not important)</p>
+        <codelab-snippet>
+&lt;button id="playsound" disabled>Start&lt;/button>&lt;br/>
+ReverbLevel : &lt;input type="range" id="revlevel" min="0" max="100" value="50"/>
+  &lt;span id="revdisp">50&lt;/span></codelab-snippet>
+
+        <p class="bottom5px">Next, add JavaScript below</p>
+        <codelab-snippet>
+&lt;script type="text/javascript">
+var audioctx = new AudioContext();
+var files = [
+    "loop.wav",
+    "s1_r1_bd.wav",
+];
+var source = null;
+var convolver = audioctx.createConvolver();
+var revlevel = audioctx.createGain();
+revlevel.gain.value=0.5;
+convolver.connect(revlevel);
+revlevel.connect(audioctx.destination);
+var buffers = [];
+var loadidx = 0;
+
+for(var i=0; i&lt;files.length; i++) {
+    LoadSample(audioctx, i);
+}
+function LoadSample(ctx, idx) {
+    var req = new XMLHttpRequest();
+    req.open("GET", files[i], true);
+    req.responseType = "arraybuffer";
+    req.onload = function() {
+        if(req.response) {
+            ctx.decodeAudioData(req.response,function(b){buffers[idx]=b;},function(){});
+            if(files.length==buffers.length) {
+                document.querySelector("button#playsound").removeAttribute("disabled");
+            }
+        }
+    }
+    req.send();
+}
+&lt;/script></codelab-snippet>
+
+        <p><span class="input-font">Convolver Node</span> is intermiating in between input source and <span class="input-font">destination</span>. So Node Graph here looks like this</p>
+        <div class="flex-center">
+          <img src="./images/convolver1.png" class="bordered">
+        </div>
+
+        <p class="bottom5px">Finally, write event handler for clicking/tapping button.<br>
+        <codelab-snippet>
+&lt;script type="text/javascript">
+document.querySelector("button#playsound").addEventListener("click", function(event){
+    var label;
+    if(event.target.innerHTML=="Stop") {
+        src.stop(0);
+        label="Start";
+    } else {
+        src = audioctx.createBufferSource();
+        src.buffer = buffers[0];
+        convolver.buffer = buffers[1];
+        src.loop = true;
+        src.connect(audioctx.destination);
+        src.connect(convolver);
+        src.start(0);
+        label="Stop";
+    }
+    event.target.innerHTML=label;
+});
+document.querySelector("input#revlevel").addEventListener("change", function(event){
+    var lev=event.target.value;
+    revlevel.gain.value=parseInt(lev)*0.01;
+    event.target.nextSibling.innerHTML=lev;
+});
+&lt;/script></codelab-snippet>
+
+        <p>Run application by clicking/tapping <button id="step9">Start</button> <paper-progress value="0" id="step9progress" class="step9 middle hidden"></paper-progress> button to playing sound from audio file. To change the audio effect level is available by updating slider.</p>
+        <ul style="list-style-type: none">
+          <li><span class="input-font">ReverbLevel : <input type="range" id="step9revlevel" min="0" max="100" value="50" style="width:200px;" class="middle"/><span id="revdisp">50</span></span></li>
+        </ul>
+      </codelab-article>
+
+
+    </codelab-pack>
+    <script src="./js/webaudio-demo.js"></script>
+</template>

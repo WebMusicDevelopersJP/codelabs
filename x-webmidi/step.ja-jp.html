@@ -1,0 +1,439 @@
+<template>
+    <codelab-pack label="Web MIDI API（x-webmidi編）" 
+                  feedback_link="https://github.com/ryoyakawai/x-webmidi/issues"
+                  category=""
+                  environment="">
+
+      <!-- 1 -->
+      <codelab-article step_label="はじめに" duration="1:00">
+        <h2>利用背景</h2>
+        <p class="top">ブラウザとMIDI機器を接続するのにJavaScriptを使って手続き型で記述するのではなく、より簡単・スピーディに実装する為にWeb ComponentsのWrapperである<a href="https://www.polymer-project.org" target="_blank">Polymer</a>を利用して宣言的に記述する。</p>
+        
+        <h2>実装に使うもの</h2>
+        <ul class="top">
+          <li><img src="./images/chrome_flat_by_packrobottom.png" width="16px" class="middle"><a href="//www.google.co.jp/chrome/browser/" target="_blank">Google Chrome</a> 43+</li>
+          <li><img src="./images/chrome_dev_editor-logo.png" width="16px" class="middle"><a href="https://chrome.google.com/webstore/detail/chrome-dev-editor-develop/pnoffddplpippgcfjdhbmhkofpnaalpg" target="_blank">Chrome Dev Editor</a></li>
+          <li><img src="./images/bower_logo.png" width="16px" class="middle"><a href="//bower.io/" target="_blank">Bower</a>（インストール方法は後述）</li>
+          <li>MIDIデバイス</li>
+        </ul>
+        <h2>完成品ソースコード</h2>
+        <ul class="top" style="list-style-type: none">
+          <li><i class="material-icons middle">file_download</i><a href="./download/test_x-webmidi.zip">ソースコード</a></li>
+        </ul>        
+      </codelab-article>
+
+      <!-- 2 -->
+      <codelab-article step_label="開発環境の準備" duration="10:00">
+        <h2><img src="./images/chrome_flat_by_packrobottom.png" width="20" class="middle">Google Chromeのインストール</h2>
+        <p class="top">ご利用のPlatformに合わせて<a href="//www.google.co.jp/chrome/browser/" target="_blank">ココ</a>からダウンロードしてご利用ください。</p>
+
+        <h2><img src="./images/chrome_dev_editor-logo.png" width="20" class="middle">Chrome Dev Editorのインストール</h2>
+        <p class="top"><a href="//chrome.google.com/webstore/detail/chrome-dev-editor-develop/pnoffddplpippgcfjdhbmhkofpnaalpg" target="_blank">ココ</a>をChromeで表示してインストールしてください。</p>
+
+        <h2><img src="./images/bower_logo.png" width="20" class="middle">Bowerのインストール</h2>
+        <p class="top">
+Bowerをインストールするには、npm(Node Package Manager)のインストールが必要です。<br>Windowsの場合とMacの場合を説明します。
+          <div class="indent15">
+            <h3><img src="./images/windows_logo.png" width="18" class="middle">Windows</h3>
+            <div class="indent15">
+              <h4><i class="material-icons middle">settings</i> nodejsのインストール <img src="./images/nodejs-logo.png" height="30" class="middle"></h4>
+              <p class="top">
+                <a href="//nodejs.org" target="_blank">ココ</a>からインストーラをダウンロードしてインストールしてください。<br>コマンドプロンプトで<code>node</code>コマンドが有効になっていたらインストール成功です。
+                <codelab-snippet>
+C:\Users\hogehoge>node --version
+v0.8.18</codelab-snippet>
+
+                <h4><i class="material-icons middle">settings</i>Gitのインストール <img src="./images/Git-Logo-2Color.png" height="20" class="middle"></h4>
+                <p class="top">
+                  <a href="//msysgit.github.io/" target="_blank">ココ</a>からインストーラをダウンロードしてインストールしてください。<br>コマンドプロンプトで<code>node</code>コマンドが有効になっていたらインストール成功です。
+                  <codelab-snippet>
+C:\Users\hogehoge>git --version
+git version 1.8.1.msysgit.1</codelab-snippet>
+                </p>
+
+                <h4><i class="material-icons middle">settings</i>Bowerのインストール <img src="./images/bower_logo.png" height="20" class="middle"></h4>
+                <p class="top">
+                  Bowerはnpmを使ってインストールを行います。以下のコマンドをコマンドプロンプトから入力してください。
+                  <codelab-snippet>
+C:\Users\hogehoge>npm install bower -g</codelab-snippet>
+コマンド実行後は以下のように表示されます。
+                  <codelab-snippet>
+npm http GET https://registry.npmjs.org/bower
+npm http 304 https://registry.npmjs.org/bower
+npm http GET https://registry.npmjs.org/tmp
+          ：
+bower@0.7.0 C:\Users\hogehoge\AppData\Roaming\npm\node_modules\bower
+├── stable@0.1.3
+├── archy@0.0.2
+├── colors@0.6.0-1
+├── semver@1.1.2
+├── tmp@0.0.16
+├── async@0.1.22
+├── mkdirp@0.3.4
+├── hogan.js@2.0.0
+├── request@2.11.4
+├── lodash@0.9.2
+├── rimraf@2.0.3 (graceful-fs@1.1.14)
+├── nopt@2.0.0 (abbrev@1.0.4)
+├── fstream@0.1.21 (inherits@1.0.0, graceful-fs@1.1.14)
+├── tar@0.1.16 (inherits@1.0.0, block-stream@0.0.6)
+├── vows@0.6.4 (eyes@0.1.8, diff@1.0.4)
+├── rc@0.0.7 (config-chain@1.1.4, optimist@0.3.5)
+├── read-package-json@0.1.12 (graceful-fs@1.1.14, lru-cache@2.0.4, slide@1.1.3, npmlog@0.0.2)
+├── glob@3.1.17 (inherits@1.0.0, graceful-fs@1.1.14, minimatch@0.2.9)
+└── unzip@0.0.4 (pullstream@0.0.4, binary@0.3.0)</codelab-snippet>
+以下のコマンドが有効になったらインストール完了です。
+                  <codelab-snippet>
+C:\Users\hogehoge>bower --version
+0.7.0</codelab-snippet>
+                </p>
+            </div>
+          </div>
+          
+          <div class="indent15">
+            <h3><img src="./images/apple-mac-logo.png" width="24" class="middle">Mac</h3>
+            <div class="indent15">
+              ここではhomebrew（OS X用のパッケージマネージャ）を使ったインストール方法を説明します。
+
+                <h4><i class="material-icons middle">settings</i>Homebrew のインストール</h4>
+                <p class="top">
+                  Terminalから以下のコマンドを実行させます。
+                  <codelab-snippet>
+$ ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"</codelab-snippet>
+                  以下のコマンドが有効になっていたらインストール成功です。
+                  <codelab-snippet>
+$ brew --help
+Example usage:
+  brew [info | home | options ] [FORMULA...]
+  brew install FORMULA...
+  brew uninstall FORMULA...
+          ：
+Further help:
+  man brew
+  brew home</codelab-snippet>
+                </p>
+
+              <h4><i class="material-icons middle">settings</i>nodejsのインストール <img src="./images/nodejs-logo.png" height="30" class="middle"></h4>
+              <p class="top">
+                homebrewでインストールを行います。
+                <codelab-snippet>
+$ brew install node.js</codelab-snippet>
+                  以下のコマンドが有効になっていたらインストール成功です。
+                <codelab-snippet>
+$ node -v
+v0.12.5
+</codelab-snippet>
+
+                <h4><i class="material-icons middle">settings</i>Bowerのインストール <img src="./images/bower_logo.png" height="20" class="middle"></h4>
+                <p class="top">
+                  Bowerはnpmを使ってインストールを行います。以下のコマンドをコマンドプロンプトから入力してください。
+                  <codelab-snippet>
+$ npm install bower -g</codelab-snippet>
+                  以下のコマンドが有効になっていたらインストール成功です。
+                <codelab-snippet>
+$ bower -v
+1.4.1</codelab-snippet>
+
+            </div>
+          </div>
+          <p>以上で準備完了です。</p>
+
+      </codelab-article>
+
+      <!-- 3 -->
+      <codelab-article step_label="x-webmidiのダウンロード" duration="5:00">
+        <p>bowerを使ってx-webmidiを取得します。<br>
+          <h3><i class="material-icons middle">folder_open</i>アプリケーションを開発するディレクトリの作成</h3>
+          <p>Chrome Dev Editorを起動します。<br><code>chrome://apps</code>からアプリケーションランチャーを表示して、<b>Chrome Dev Editor</b>をクリックでChrome Dev Editorは起動します。
+            <div class="flex-center">
+              <img src="./images/xwebmidi-launch.png" width="420" class="bordered">
+            </div>
+          </p>
+
+          <p>
+            起動後画面の左ペイン右下の <i class="material-icons middle" style="color:rgba(210, 63, 49, 1);">add_circle</i>ボタンをクリックして、表示されるダイアログの<span class="input-font">[CHOOSE FOLDER]</span>を選択して、開発用ディレクトリを指定します。<br>
+            <span class="notice-01">※ 初期起動の場合プロジェクト名・Type指定の前に保存するディレクトリの指定画面が表示されます。ここでは<span class="input-font">~/Documents/chrome_dev_editor/</span>と指定しています。</span> 
+            <div class="flex-center">
+              <img src="./images/xwebmidi-03.png" width="420" class="bordered">
+            </div>
+            <p style="margin-bottom:2px;">ここではサンプルとして以下を入力・選択しています。</p>
+            <div class="sample-input-01-blue" style="margin-top:2px;">
+              Project Name: <span class="input-font">test_x-webmidi</span><br>
+              Project type: <span class="input-font">JavaScript web app</span>
+            </div>
+          </p>
+
+          <p>
+            作成されたディレクトリへのPathを取得する。<br>
+            Project名を右クリックし、表示されるプロパティをクリックして表示。
+            <div class="flex-center">
+              <img src="./images/xwebmidi-04.png" width="420" class="bordered">
+            </div>
+            <p style="margin-bottom:2px;">表示されるダイアログの<span class="input-font">Location</span>をコピーしてください。</p>
+            <div class="flex-center">
+              <img src="./images/xwebmidi-05.png" width="420" class="bordered">
+            </div>
+          </p>
+
+          <h3><i class="material-icons middle">cloud_download</i>x-webmidiをダウンロード</h3>
+          <p>
+            TerminalからChrome Dev Editorで作成したプロジェクトのディレクトリに移動します。
+            <codelab-snippet>
+$ cd ~/Documents/chrome_dev_editor/test_x-webmidi/</codelab-snippet>
+            続いて、以下のコマンdのからx-webmidiを取得します。
+            <codelab-snippet>
+$ bower install x-webmidi
+bower x-webmidi#*               cached git://github.com/ryoyakawai/x-webmidi.git#0.10.1
+bower x-webmidi#*             validate 0.10.1 against git://github.com/ryoyakawai/x-webmidi.git#*
+bower polymer#^1.0.0            cached git://github.com/Polymer/polymer.git#1.0.6
+bower polymer#^1.0.0          validate 1.0.6 against git://github.com/Polymer/polymer.git#^1.0.0
+          ：
+bower webcomponentsjs#^0.7.2    cached git://github.com/Polymer/webcomponentsjs.git#0.7.6
+bower webcomponentsjs#^0.7.2  validate 0.7.6 against git://github.com/Polymer/webcomponentsjs.git#^0.7.2
+          ：
+bower x-webmidi#~0.10.1        install x-webmidi#0.10.1
+bower polymer#^1.0.0           install polymer#1.0.7
+bower webcomponentsjs#^0.7.2   install webcomponentsjs#0.7.7
+
+x-webmidi#0.10.1 bower_components/x-webmidi
+└── polymer#1.0.7
+
+polymer#1.0.7 bower_components/polymer
+└── webcomponentsjs#0.7.7
+
+webcomponentsjs#0.7.7 bower_components/webcomponentsjs</codelab-snippet>
+            
+            Chrome Dev Editorの左ペインに<span class="input-font">bower_components</span>ディレクトリが表示されていたら完了です。
+            <div class="flex-center">
+              <img src="./images/xwebmidi-06.png" width="420" class="bordered">
+            </div>
+          </p>
+
+        </p>
+      </codelab-article>
+
+
+      <!-- 4 -->
+      <codelab-article step_label="x-webmidiを使う準備" duration="1:00">
+        <h3><i class="material-icons middle">mode_edit</i>x-webmidiのcore Elementを追加する</h3>
+        <p>先ほどChrome Dev Editorで作成したプロジェクトを使います。<br> <span class="input-font">index.html</span> の <span class="input-font">head</span> に以下を記入してx-webmidiのコアElementをImportします。
+          <codelab-snippet>
+&lt;link rel="import" href="./bower_components/x-webmidi/x-webmidirequestaccess.html"&gt;</codelab-snippet>
+          次に<span class="input-font">body</span>に以下を記入してx-webmidiをActivateします。
+          <codelab-snippet>
+&lt;x-webmidirequestaccess sysex="false" input="true" output="true"&gt;&lt;/x-webmidirequestaccess&gt;</codelab-snippet>
+          以上で準備は完了です。
+        </p>
+
+      </codelab-article>
+
+      <!-- 5 -->
+      <codelab-article step_label="MIDI Inputデバイスを使う" duration="5:00">
+        <br>
+        MIDIデバイスのコンピュータに接続してください。
+        <h3><i class="material-icons middle">mode_edit</i>MIDI Inputデバイスをリスト表示する。</h3>
+        <p><span class="input-font">index.html</span> の <span class="input-font">body</span> 内の表示させたい場所に以下を追記します。
+          <codelab-snippet>
+&lt;x-webmidiinput id="foo-input" autoreselect="true"&gt;&lt;/x-webmidiinput&gt;</codelab-snippet>
+            以上で準備は完了です。<br>
+          <span class="notice-01">※ ここでは <span class="input-font">index.html</span> には修正を加えずに、<code>&lt;div id="greeting"&gt;&lt;/div&gt;</code> の直下に追記しています。</span><br>
+          Chrome Dev Editorの左上の再生ボタン <i class="material-icons middle">play_arrow</i> をクリックすると実行されます。
+          <div class="flex-center">
+            <img src="./images/xwebmidi-07.png" width="580" class="bordered">
+          </div>
+<p>下の画面が出てきたら成功です。</p>
+          <div class="flex-center">
+            <img src="./images/xwebmidi-08.png" width="420" class="bordered">
+          </div>
+        </p>
+<br>
+        <h3><i class="material-icons middle">mode_edit</i>MIDI Inputデバイスからの入力を表示する</h3>
+        <p><span class="input-font">index.html</span> の<span class="input-font">body</span>内に表示させる場所を作ります。
+          <codelab-snippet>
+&lt;div id="result"&gt;(Result Area)&lt;/div&gt;</codelab-snippet>
+          <span class="notice-01">※ ここでは<code>&lt;x-webmidiinput&gt;</code>のタグの直下に追記しています。</span><br>
+          <span class="input-font">style.css</span> に以下のCSSを追記します。
+          <codelab-snippet>
+#result {
+  background-color:#efefef; 
+  border: 1px solid rgb(175, 175, 175); 
+  border-top-left-radius: 3px; 
+  border-top-right-radius: 3px; 
+  border-bottom-right-radius: 3px; 
+  border-bottom-left-radius: 3px; 
+  height: 200px; 
+  width: 400px; 
+  word-wrap: break-word; 
+  overflow: auto; 
+  font-family: monospace;
+}</codelab-snippet>
+          続いて <span class="input-font">main.js</span> に以下のHandlerを追記します。
+
+          <codelab-snippet>
+window.addEventListener('midiin-event:foo-input', function(event) {
+  var out=[];
+  var text=document.querySelector("#result").innerHTML;
+  for(var i=0; i&lt;event.detail.data.length; i++) {
+    out.push("0x"+("00"+event.detail.data[i].toString(16)).substr(-2));
+  }
+  document.querySelector("#result").innerHTML=out.join(" ")+"&lt;br&gt;"+text;
+});</codelab-snippet>
+実行してみます。<br>
+MIDIデバイスがリストに表示され、また選択したMIDIデバイスを操作することでメッセージが用意したBoxの中に表示されれば完成です。
+          <div class="flex-center">
+            <img src="./images/xwebmidi-09.png" width="520" class="bordered">
+          </div>
+
+      </codelab-article>
+
+
+      <!-- 6 -->
+      <codelab-article step_label="MIDI Outputデバイスを使う" duration="5:00">
+        <br>
+        MIDIデバイスのコンピュータに接続してください。
+        <h3><i class="material-icons middle">mode_edit</i>MIDI Outputデバイスをリスト表示する。</h3>
+        <p><span class="input-font">index.html</span> の <span class="input-font">body</span> 内の表示させたい場所に以下を追記します。
+          <codelab-snippet>
+&lt;x-webmidioutput id="foo-output" autoreselect="true"&gt;&lt;/x-webmidioutput&gt;</codelab-snippet>
+            以上で準備は完了です。<br>
+<p>実行して下の画面が出てきたら成功です。</p>
+          <div class="flex-center">
+            <img src="./images/xwebmidi-11.png" width="420" class="bordered">
+          </div>
+          <span class="notice-01">※ <span class="input-font">index.html</span> の <code>body</code> 内を以下のように修正しました。</span><br>
+      <codelab-snippet>
+&lt;body>
+  &lt;x-webmidirequestaccess sysex="false" input="true" output="true">&lt;/x-webmidirequestaccess>
+
+  &lt;div id="greeting">&lt;/div>
+  &lt;div>
+    [input]&lt;br>
+    &lt;x-webmidiinput id="foo-input" autoreselect="true">&lt;/x-webmidiinput>
+    &lt;div id="result">(Result Area)&lt;/div>
+  &lt;/div>
+  &lt;br>
+  &lt;div>
+    [output]&lt;br>
+    &lt;x-webmidioutput id="foo-output" autoreselect="true">&lt;/x-webmidioutput>
+  &lt;/div>
+
+  &lt;script src="main.js">&lt;/script> 
+&lt;/body></codelab-snippet>
+        </p>
+
+<br>
+
+        <h3><i class="material-icons middle">mode_edit</i>MIDI OutputデバイスへMIDIメッセージを送信する</h3>
+        <p>PCキーボードの <span class="input-font">[C]</span> を押す、離すでMIDI機器が鳴るように <span class="input-font">main.js</span> に以下をHandlerを追記します。
+          <codelab-snippet>
+var midiout;
+window.addEventListener('midioutput-updated:foo-output', function(event) {
+  if(event.target.outputIdx!="false") {
+    document.addEventListener('keydown', keyDownEvent);
+    document.addEventListener('keyup', keyUpEvent);
+    midiout=document.querySelector("#foo-output");
+  } else {
+    document.removeEventListener('keydown', keyDownEvent);
+    document.removeEventListener('keyup', keyUpEvent);
+    midiout="";
+  }
+});
+
+var c_on=false;
+function keyDownEvent(event) {
+  if(event.keyCode==67 && c_on===false) {
+    c_on=true;
+    midiout.sendRawMessage([0x90, 0x45, 0x7f], 0);
+  }
+}
+function keyUpEvent(event) {
+  if(event.keyCode==67 && c_on===true) {
+    c_on=false;
+    midiout.sendRawMessage([0x80, 0x45, 0x7f], 0);
+  }
+}</codelab-snippet>
+Output で選択した機器が <span class="input-font">[C]</span> を押すで音が鳴り、 <span class="input-font">[C]</span> を離すで音が止まれば完成です。
+        </p>
+
+
+      </codelab-article>
+
+
+      <!-- 7 -->
+      <codelab-article step_label="応用：NSX-1を操作する" duration="15:00">
+        <br>
+        NSX-1 は音源チップで、歌詞データを送信することで歌うことが可能です。<a href="https://www.switch-science.com/catalog/1490/" target="_blank">eVY1シールド</a>、<a href="http://otonanokagaku.net/nsx39/" target="_blank">ポケミク</a>が搭載しています。
+        <h3><i class="material-icons middle">mode_edit</i>歌詞データを送る為の設定</h3>
+        <p>歌詞データを送るにはMIDIメッセージのSysEx（システムエクスクルーシブ）をNSX-1に対して送信する必要があります。
+           Webアプリケーションが SysEx を Web MIDI API を使って送信する為にはユーザの許可が必要になります。<b>x-webmidiを使う準備</b> で追記した <span class="input-font">x-webmidirequestaccess</span> の <span class="input-font">sysex</span> の Attribute を <span class="input-font">false</span> から <span class="input-font">true</span> を変更する必要があります。
+          <codelab-snippet>
+&lt;x-webmidirequestaccess sysex="true" input="true" output="true">&lt;/x-webmidirequestaccess></codelab-snippet>
+          <p><span class="input-font">index.html</span> の <span class="input-font">body</span> 内で歌詞入力のテキストボックスを表示させたい場所に以下を追記します。
+          <codelab-snippet>
+&lt;div>
+  &lt;link rel="import" href="./bower_components/x-webmidi/extras/wm-nsx1text/wm-nsx1text.html">
+  &lt;input id="text" size="70" value="あいうえおかきくけこさしすせそ">&lt;br>
+  &lt;wm-nsx1text id="evy1" type="evy1">&lt;/wm-nsx1text>
+  &lt;wm-nsx1text id="poke39" type="poke39">&lt;/wm-nsx1text>
+  &lt;button id="evy1text">eVY1用の歌詞として送信&lt;/button>
+  &lt;button id="poke39text">ポケミク用の歌詞として送信&lt;/button>
+&lt;/div></codelab-snippet>
+          </p>
+          <p>追記したボタンをクリックすることで歌詞が送信されるように <span class="input-font">main.js</span>  に以下の handler を更新し、それに対応する関数を追記します。<br>
+            <p>Handler は <code class="input-font">midioutput-updated:foo-output</code> の Event Listener に追記します。</p>
+            <codelab-snippet>
+window.addEventListener('midioutput-updated:foo-output', function(event) {
+  if(event.target.outputIdx!="false") {
+    document.addEventListener('keydown', keyDownEvent);
+    document.addEventListener('keyup', keyUpEvent);
+    midiout=document.querySelector("#foo-output");
+    document.getElementById("evy1text").addEventListener("click", evy1text); // ◀ 追加
+    document.getElementById("poke39text").addEventListener("click", poke39text); // ◀ 追加
+  } else {
+    document.removeEventListener('keydown', keyDownEvent);
+    document.removeEventListener('keyup', keyUpEvent);
+    document.getElementById("evy1text").removeEventListener("click", evy1text); // ◀ 追加
+    document.getElementById("poke39text").removeEventListener("click", poke39text); // ◀ 追加
+    midiout="";
+  }
+});</codelab-snippet>
+
+            <p>関数 は最終行以降に追記するとよいでしょう。</p>
+            <codelab-snippet>
+function evy1text() {
+  var text=document.getElementById("text").value;
+  var out=document.getElementById("evy1").convertText2SysEx(text);
+  sendSysEx2Device(out);
+  playTone(text.length);
+}
+function poke39text() {
+  var text=document.getElementById("text").value;
+  var out=document.getElementById("poke39").convertText2SysEx(text);
+  sendSysEx2Device(out);
+  playTone(text.length);
+}
+function sendSysEx2Device(msg) {
+  for(var i=0; i&lt;msg.sysEx.length; i++) {
+    midiout.sendRawMessage(msg.sysEx[i], 0);
+  }
+}
+function playTone(count) {
+  var interval=400; // (ms)
+  var noteNo=69; // A4
+  for(var i=1; i&lt;=count; i++) {
+    midiout.sendRawMessage([0x90, "0x"+(noteNo+i).toString(16), 0x7f], interval*i);
+    midiout.sendRawMessage([0x80, "0x"+(noteNo+i).toString(16), 0x7f], interval*(i+1));
+  }  
+}</codelab-snippet>
+          </p>
+          <p>実行することで以下の画面が表示され、ボタンをクリックすることでeVY1、またはポケミクが歌えば完成です。</p>
+          <div class="flex-center">
+            <img src="./images/xwebmidi-12.png" width="580" class="bordered">
+          </div>
+
+        </p>
+
+      </codelab-article>
+
+    </codelab-pack>
+</template>
