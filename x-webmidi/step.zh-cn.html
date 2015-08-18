@@ -1,0 +1,445 @@
+<template>
+    <codelab-pack label="Web MIDI API（with x-webmidi）" 
+                  feedback_link="https://github.com/ryoyakawai/x-webmidi/issues"
+                  category=""
+                  environment="">
+
+      <!-- 1 -->
+      <codelab-article step_label="概述" duration="1:00">
+        <h2>背景</h2>
+        <p class="top">x-webmidi 是用 <a href="https://www.polymer-project.org" target="_blank">Polymer</a> 开发一个的 Web MIDI API 元素，Polymer 是 Google 开发的 Web Components 库。<br>
+使用 x-webmidi 元素， Web MIDI 应用程序可以以声明地方式快速、容易地被开发出来。要声明式地编写 Web MIDI 程序需要使用某种 Web Components 的封装组件来连接 Web 浏览器和 MIDI 设备。</p>
+        
+        <h2>运行此 Codelab 需要的工具</h2>
+        <ul class="top">
+          <li><img src="./images/chrome_flat_by_packrobottom.png" width="16px" class="middle"><a href="//www.google.co.jp/chrome/browser/" target="_blank">Google Chrome</a> 43+</li>
+          <li><img src="./images/chrome_dev_editor-logo.png" width="16px" class="middle"><a href="https://chrome.google.com/webstore/detail/chrome-dev-editor-develop/pnoffddplpippgcfjdhbmhkofpnaalpg" target="_blank">Chrome Dev Editor</a></li>
+          <li><img src="./images/bower_logo.png" width="16px" class="middle"><a href="//bower.io/" target="_blank">Bower</a>（稍后介绍安装和卸载）</li>
+          <li>MIDI 设备 <span class="notice-01">对于 Mac 用户，MIDI 输入设备也可以通过 "<a href="http://nikolozi.com/apps/easymidi/" target="_blank">Easy MIDI</a>" 应用程序模拟。</span> </li>
+        </ul>
+        <h2>要开发的源码</h2>
+        <ul class="top" style="list-style-type: none">
+          <li><i class="material-icons middle">file_download</i><a href="./download/test_x-webmidi.zip">Download Source Code</a></li>
+        </ul>        
+      </codelab-article>
+
+      <!-- 2 -->
+      <codelab-article step_label="准备开发环境" duration="10:00">
+        <h2><img src="./images/chrome_flat_by_packrobottom.png" width="20" class="middle">安装 Google Chrome</h2>
+        <p class="top">从 <a href="//www.google.co.jp/chrome/browser/" target="_blank">这里</a> 下载 Chrome 并安装。</p>
+
+        <h2><img src="./images/chrome_dev_editor-logo.png" width="20" class="middle">安装 Chrome Dev Editor</h2>
+        <p class="top">用 Google Chrome 打开 <a href="//chrome.google.com/webstore/detail/chrome-dev-editor-develop/pnoffddplpippgcfjdhbmhkofpnaalpg" target="_blank">这个 URL</a> ，然后安装。</p>
+
+        <h2><img src="./images/bower_logo.png" width="20" class="middle">安装 Bower</h2>
+        <p class="top">
+安装 Bower 之前先需要安装 npm(Node Package Manager) 。<br>
+下面介绍在 Windows 和 Macintosh(Mac) 中如何安装它们。
+          <div class="indent15">
+            <h3><img src="./images/windows_logo.png" width="18" class="middle">Windows</h3>
+            <div class="indent15">
+              <h4><i class="material-icons middle">settings</i> 安装 nodejs <img src="./images/nodejs-logo.png" height="30" class="middle"></h4>
+              <p class="top">
+                从 <a href="//nodejs.org" target="_blank">这里</a> 下载安装程序，然后安装 nodejs 。<br> 安装之后，如果 <code>node</code> 命令在命令行中可用，那么 nodejs 就安装成功了。
+                <codelab-snippet>
+C:\Users\hogehoge>node --version
+v0.8.18</codelab-snippet>
+
+                <h4><i class="material-icons middle">settings</i>安装 Git <img src="./images/Git-Logo-2Color.png" height="20" class="middle"></h4>
+                <p class="top">
+                  从 <a href="//msysgit.github.io/" target="_blank">这里</a> 下载安装程序，然后安装 git 。<br>安装之后，如果 <code>git</code> 命令在命令行中可用，那么 git 就安装成功了。
+                  <codelab-snippet>
+C:\Users\hogehoge>git --version
+git version 1.8.1.msysgit.1</codelab-snippet>
+                </p>
+
+                <h4><i class="material-icons middle">settings</i> 安装 Bower <img src="./images/bower_logo.png" height="20" class="middle"></h4>
+                <p class="top">
+                  安装 Bower 需要 npm 。如果系统已经安装了 npm，使用如下命令安装 bower：
+                  <codelab-snippet>
+C:\Users\hogehoge>npm install bower -g</codelab-snippet>
+安装 Bower 的时候，命令提示符上会显示这些信息：
+                  <codelab-snippet>
+npm http GET https://registry.npmjs.org/bower
+npm http 304 https://registry.npmjs.org/bower
+npm http GET https://registry.npmjs.org/tmp
+          ：
+bower@0.7.0 C:\Users\hogehoge\AppData\Roaming\npm\node_modules\bower
+├── stable@0.1.3
+├── archy@0.0.2
+├── colors@0.6.0-1
+├── semver@1.1.2
+├── tmp@0.0.16
+├── async@0.1.22
+├── mkdirp@0.3.4
+├── hogan.js@2.0.0
+├── request@2.11.4
+├── lodash@0.9.2
+├── rimraf@2.0.3 (graceful-fs@1.1.14)
+├── nopt@2.0.0 (abbrev@1.0.4)
+├── fstream@0.1.21 (inherits@1.0.0, graceful-fs@1.1.14)
+├── tar@0.1.16 (inherits@1.0.0, block-stream@0.0.6)
+├── vows@0.6.4 (eyes@0.1.8, diff@1.0.4)
+├── rc@0.0.7 (config-chain@1.1.4, optimist@0.3.5)
+├── read-package-json@0.1.12 (graceful-fs@1.1.14, lru-cache@2.0.4, slide@1.1.3, npmlog@0.0.2)
+├── glob@3.1.17 (inherits@1.0.0, graceful-fs@1.1.14, minimatch@0.2.9)
+└── unzip@0.0.4 (pullstream@0.0.4, binary@0.3.0)</codelab-snippet>
+安装之后，如果 <code>bower</code> 命令在命令行中可用，那么 bower 就安装成功了。
+                  <codelab-snippet>
+C:\Users\hogehoge>bower --version
+0.7.0</codelab-snippet>
+                </p>
+            </div>
+          </div>
+          
+          <div class="indent15">
+            <h3><img src="./images/apple-mac-logo.png" width="24" class="middle">Mac</h3>
+            <div class="indent15">
+               这里介绍使用 homebrew(OS X 上的一个包管理工具) 安装 bower 。
+
+                <h4><i class="material-icons middle">settings</i> 安装 Homebrew</h4>
+                <p class="top">
+                  在终端(Terminal.app)上输入下面命令开始安装 Homebrew 。
+                  <codelab-snippet>
+$ ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"</codelab-snippet>
+                  下面的命令可用就说明安装成功了。
+                  <codelab-snippet>
+$ brew --help
+Example usage:
+  brew [info | home | options ] [FORMULA...]
+  brew install FORMULA...
+  brew uninstall FORMULA...
+          ：
+Further help:
+  man brew
+  brew home</codelab-snippet>
+                </p>
+
+              <h4><i class="material-icons middle">settings</i>安装 nodejs <img src="./images/nodejs-logo.png" height="30" class="middle"></h4>
+              <p class="top">
+                用 homebrew 安装 nodejs 。
+                <codelab-snippet>
+$ brew install node.js</codelab-snippet>
+                  下面的命令可用就说明安装成功了。
+                <codelab-snippet>
+$ node -v
+v0.12.5
+</codelab-snippet>
+
+                <h4><i class="material-icons middle">settings</i>安装 Bower <img src="./images/bower_logo.png" height="20" class="middle"></h4>
+                <p class="top">
+                  使用 npm 安装 Bower ，命令如下：
+                  <codelab-snippet>
+$ npm install bower -g</codelab-snippet>
+                  下面的命令可用就说明安装成功了。
+                <codelab-snippet>
+$ bower -v
+1.4.1</codelab-snippet>
+
+            </div>
+          </div>
+          <p>现在环境已经建好了</p>
+
+      </codelab-article>
+
+      <!-- 3 -->
+      <codelab-article step_label="下载 x-webmidi" duration="5:00">
+        <p>使用 bower 获取 x-webmidi<br>
+          <h3><i class="material-icons middle">folder_open</i>创建应用的构建目录</h3>
+          <p>启动 Chrome Dev Editor<br>在 Chrome 地址栏输入 <code>chrome://apps</code> ，然后点击 <b>Chrome Dev Editor</b> 启动。
+            <div class="flex-center">
+              <img src="./images/xwebmidi-launch.png" width="420" class="bordered">
+            </div>
+          </p>
+
+          <p>
+            点击左侧面板下方的 <i class="material-icons middle" style="color:rgba(210, 63, 49, 1);">add_circle</i> 按钮，在弹出窗口的 <span class="input-font">[CHOOSE FOLDER]</span> 区域指定工作目录。<br>
+            <span class="notice-01">※ 第一次启动 Chrome Deve Editor, 会出现一个窗口让你填写 "Project Name" 和 "Script type"。这里我们填写 <span class="input-font">~/Documents/chrome_dev_editor/</span> 。</span> 
+            <div class="flex-center">
+              <img src="./images/xwebmidi-03.png" width="420" class="bordered">
+            </div>
+            <p style="margin-bottom:2px;">这里我们按下面内容填写</p>
+            <div class="sample-input-01-blue" style="margin-top:2px;">
+              Project Name: <span class="input-font">test_x-webmidi</span><br>
+              Project type: <span class="input-font">JavaScript web app</span>
+            </div>
+          </p>
+
+          <p>
+            获取新创建的项目的目录路径。<br>右键点击项目名称，然后点击 Properties...  
+            <div class="flex-center">
+              <img src="./images/xwebmidi-04.png" width="420" class="bordered">
+            </div>
+            <p style="margin-bottom:2px;">复制 <span class="input-font">Location</span> 的内容</p>
+            <div class="flex-center">
+              <img src="./images/xwebmidi-05.png" width="420" class="bordered">
+            </div>
+          </p>
+
+          <h3><i class="material-icons middle">cloud_download</i>下载 x-webmidi</h3>
+          <p>
+            在终端(Terminal.app)里，进入 Chrome Dev Editor 的项目目录。
+            <codelab-snippet>
+$ cd ~/Documents/chrome_dev_editor/test_x-webmidi/</codelab-snippet>
+            执行如下命令下载 x-webmidi 。
+            <codelab-snippet>
+$ bower install x-webmidi
+bower x-webmidi#*               cached git://github.com/ryoyakawai/x-webmidi.git#0.10.1
+bower x-webmidi#*             validate 0.10.1 against git://github.com/ryoyakawai/x-webmidi.git#*
+bower polymer#^1.0.0            cached git://github.com/Polymer/polymer.git#1.0.6
+bower polymer#^1.0.0          validate 1.0.6 against git://github.com/Polymer/polymer.git#^1.0.0
+          ：
+bower webcomponentsjs#^0.7.2    cached git://github.com/Polymer/webcomponentsjs.git#0.7.6
+bower webcomponentsjs#^0.7.2  validate 0.7.6 against git://github.com/Polymer/webcomponentsjs.git#^0.7.2
+          ：
+bower x-webmidi#~0.10.1        install x-webmidi#0.10.1
+bower polymer#^1.0.0           install polymer#1.0.7
+bower webcomponentsjs#^0.7.2   install webcomponentsjs#0.7.7
+
+x-webmidi#0.10.1 bower_components/x-webmidi
+└── polymer#1.0.7
+
+polymer#1.0.7 bower_components/polymer
+└── webcomponentsjs#0.7.7
+
+webcomponentsjs#0.7.7 bower_components/webcomponentsjs</codelab-snippet>
+            
+在 Chrome Dev Editor 左侧面板中出现 bower_components 目录就成功了。
+            <div class="flex-center">
+              <img src="./images/xwebmidi-06.png" width="420" class="bordered">
+            </div>
+          </p>
+
+        </p>
+      </codelab-article>
+
+
+      <!-- 4 -->
+      <codelab-article step_label="准备使用 x-webmidi" duration="1:00">
+        <h3><i class="material-icons middle">mode_edit</i> 添加 x-webmidi 核心元素</h3>
+        <p>继续使用我们上一步创建的项目。<br>在 <span class="input-font">index.html</span> 文件的 <span class="input-font">head</span> 标签中导入 x-webmidi 核心元素。
+          <codelab-snippet>
+&lt;link rel="import" href="./bower_components/x-webmidi/x-webmidirequestaccess.html"&gt;</codelab-snippet>
+          接着，在 <span class="input-font">index.html</span> 文件的 <span class="input-font">body</span> 标签内加入如下标签激活 x-webmidi 。
+          <codelab-snippet>
+&lt;x-webmidirequestaccess sysex="false" input="true" output="true"&gt;&lt;/x-webmidirequestaccess&gt;</codelab-snippet>
+          准备完成，现在可以使用 x-webmidi 元素了。
+        </p>
+
+      </codelab-article>
+
+      <!-- 5 -->
+      <codelab-article step_label="处理来自输入设备的 MIDI 消息" duration="5:00">
+        <br>
+        连接 (产生 MIDI 输入的) MIDI 设备到你的电脑。<br>
+        <span class="notice-01">在 Mac 上，MIDI 输入设备也可以通过 "<a href="http://nikolozi.com/apps/easymidi/" target="_blank">Easy MIDI</a>" 这个软件来模拟。安装并运行这个应用来替代 MIDI 输入设备。</span>
+        <h3><i class="material-icons middle">mode_edit</i>在下拉列表中显示 MIDI 输入设备</h3>
+        <p>把下面的标签写到 <span class="input-font">index.html</span> 你想显示的地方。
+          <codelab-snippet>
+&lt;x-webmidiinput id="foo-input" autoreselect="true"&gt;&lt;/x-webmidiinput&gt;</codelab-snippet>
+           现在做好显示 MIDI 输入设备的准备了<br>
+          <span class="notice-01">※ 把代码添加到 <code>&lt;div id="greeting"&gt;&lt;/div&gt;</code> 后边就行，不用修改 <span class="input-font">index.html</span> 。</span><br>
+            点击 Chrome Dev Editor 左上方的运行按钮 <i class="material-icons middle">play_arrow</i> 启动应用程序。
+          <div class="flex-center">
+            <img src="./images/xwebmidi-07.png" width="580" class="bordered">
+          </div>
+<p>当浏览器显示下面这样的页面就成功了。</p>
+          <div class="flex-center">
+            <img src="./images/xwebmidi-08.png" width="420" class="bordered">
+          </div>
+        </p>
+<br>
+        <h3><i class="material-icons middle">mode_edit</i>显示来自 MIDI 输入设备的 MIDI 消息</h3>
+        <p>在 <span class="input-font">index.html</span> 的 <span class="input-font">body</span> 中添加下面的 <span class="input-font">div</span> 标签，用于显示收到的 MIDI 消息。
+          <codelab-snippet>
+&lt;div id="result"&gt;(Result Area)&lt;/div&gt;</codelab-snippet>
+          <span class="notice-01">※ 把代码添加到 <code>&lt;x-webmidiinput&gt;&lt;/x-webmidiinput&gt;</code> 后边就行。</span><br>
+          在 <span class="input-font">style.css</span> 中添加如下代码：
+          <codelab-snippet>
+#result {
+  background-color:#efefef; 
+  border: 1px solid rgb(175, 175, 175); 
+  border-top-left-radius: 3px; 
+  border-top-right-radius: 3px; 
+  border-bottom-right-radius: 3px; 
+  border-bottom-left-radius: 3px; 
+  height: 200px; 
+  width: 400px; 
+  word-wrap: break-word; 
+  overflow: auto; 
+  font-family: monospace;
+}</codelab-snippet>
+          然后在 <span class="input-font">main.js</span> 中添加下面的处理函数：
+
+          <codelab-snippet>
+window.addEventListener('midiin-event:foo-input', function(event) {
+  var out=[];
+  var text=document.querySelector("#result").innerHTML;
+  for(var i=0; i&lt;event.detail.data.length; i++) {
+    out.push("0x"+("00"+event.detail.data[i].toString(16)).substr(-2));
+  }
+  document.querySelector("#result").innerHTML=out.join(" ")+"&lt;br&gt;"+text;
+});</codelab-snippet>
+运行程序。<br>
+从下拉列表中选择一个 MIDI 输入设备。如果随着输入设备的操作，<span class="input-font">div</span> 标签中显示了输入的消息，那么就执行成功了。
+          <div class="flex-center">
+            <img src="./images/xwebmidi-09.png" width="520" class="bordered">
+          </div>
+
+      </codelab-article>
+
+
+      <!-- 6 -->
+      <codelab-article step_label="操作 MIDI 输出设备" duration="5:00">
+        <br>
+        连接 (产生 MIDI 输出的) MIDI 设备到你的电脑。
+        <h3><i class="material-icons middle">mode_edit</i>在下拉列表中显示 MIDI 输出设备</h3>
+        <p>把下面的标签写到 <span class="input-font">index.html</span> 你想显示的地方。
+          <codelab-snippet>
+&lt;x-webmidioutput id="foo-output" autoreselect="true"&gt;&lt;/x-webmidioutput&gt;</codelab-snippet> 
+           现在做好显示 MIDI 输出设备的准备了<br>
+<p>当浏览器显示下面这样的页面就成功了。</p>
+          <div class="flex-center">
+            <img src="./images/xwebmidi-11.png" width="420" class="bordered">
+          </div>
+          <span class="notice-01">※ <span class="input-font">index.html</span> 修改后的 <code>body</code> 标签大概是下面这个样子：</span><br>
+      <codelab-snippet>
+&lt;body>
+  &lt;x-webmidirequestaccess sysex="false" input="true" output="true">&lt;/x-webmidirequestaccess>
+
+  &lt;div id="greeting">&lt;/div>
+  &lt;div>
+    [input]&lt;br>
+    &lt;x-webmidiinput id="foo-input" autoreselect="true">&lt;/x-webmidiinput>
+    &lt;div id="result">(Result Area)&lt;/div>
+  &lt;/div>
+  &lt;br>
+  &lt;div>
+    [output]&lt;br>
+    &lt;x-webmidioutput id="foo-output" autoreselect="true">&lt;/x-webmidioutput>
+  &lt;/div>
+
+  &lt;script src="main.js">&lt;/script> 
+&lt;/body></codelab-snippet>
+        </p>
+
+<br>
+
+        <h3><i class="material-icons middle">mode_edit</i>发送 MIDI 消息给 MIDI 输出设备</h3>
+        <p>添加下面的代码到 <span class="input-font">main.js</span> 中，按下电脑上的 <span class="input-font">[C]</span> 键就可以播放声音。
+          <codelab-snippet>
+var midiout;
+window.addEventListener('midioutput-updated:foo-output', function(event) {
+  if(event.target.outputIdx!="false") {
+    document.addEventListener('keydown', keyDownEvent);
+    document.addEventListener('keyup', keyUpEvent);
+    midiout=document.querySelector("#foo-output");
+  } else {
+    document.removeEventListener('keydown', keyDownEvent);
+    document.removeEventListener('keyup', keyUpEvent);
+    midiout="";
+  }
+});
+
+var c_on=false;
+function keyDownEvent(event) {
+  if(event.keyCode==67 && c_on===false) {
+    c_on=true;
+    midiout.sendRawMessage([0x90, 0x45, 0x7f], 0);
+  }
+}
+function keyUpEvent(event) {
+  if(event.keyCode==67 && c_on===true) {
+    c_on=false;
+    midiout.sendRawMessage([0x80, 0x45, 0x7f], 0);
+  }
+}</codelab-snippet>
+如果按下 <span class="input-font">[C]</span> 键播放声音，释放 <span class="input-font">[C]</span> 键停止声音就成功了。
+        </p>
+
+
+      </codelab-article>
+
+
+      <!-- 7 -->
+      <codelab-article step_label="实验: 操作 NSX-1" duration="15:00">
+        <br>
+        NSX-1 是由雅马哈(Yamaha)开发的能唱歌的集成电路芯片。"嵌入 NSX-1" 的产品有: <a href="https://international.switch-science.com/catalog/1489/" target="_blank">eVY1 Shield</a>、<a href="http://www.mtv81.com/news/vocaloid-at-your-fingertips-with-pocket-miku/" target="_blank">Pocket Miku</a> 
+
+        <h3><i class="material-icons middle">mode_edit</i>编写发送歌词(lyrics)到 NSX-1 的代码</h3>
+        <p>首先，要发送歌词到 NSX-1 需要使用 System Exclusive(SysEx)，它是一种允许制造商创建专有 MIDI 消息的一种 MIDI 消息类型。由于安全原因，应用程序必需被用户允许处理 SysEx 消息，才能通过 Web MIDI API 发送 SysEx。 (浏览器提供了获得用户许可的机制。所以应用程序这边需要做的就是声明需要使用 SysEx )。<br>
+在 x-webmidi 中，这个声明依然是以声明的方式使用。<br>
+在前面的 <b>"准备使用 x-webmidi"</b> 那步中添加的 <span class="input-font">x-webmidirequestaccess</span> 元素里，修改 <span class="input-font">sysex</span> 属性为 <span class="input-font">true</span>。这个声明是使用 x-webmidi 处理 SysEx 所要做的全部。
+          <codelab-snippet>
+&lt;x-webmidirequestaccess sysex="true" input="true" output="true">&lt;/x-webmidirequestaccess></codelab-snippet>
+          <p>添加下面的代码在 <span class="input-font">index.html</span> 的 <span class="input-font">body</span> 中，放在你想显示歌词输入框的地方。
+
+          <codelab-snippet>
+&lt;div>
+  &lt;link rel="import" href="./bower_components/x-webmidi/extras/wm-nsx1text/wm-nsx1text.html">
+  &lt;input id="text" size="70" value="あいうえおかきくけこさしすせそ">&lt;br>
+  &lt;wm-nsx1text id="evy1" type="evy1">&lt;/wm-nsx1text>
+  &lt;wm-nsx1text id="poke39" type="poke39">&lt;/wm-nsx1text>
+  &lt;button id="evy1text">Sending Lyrics by eVY1 format&lt;/button>
+  &lt;button id="poke39text">Sending Lyrics by Pocket-Miku format&lt;/button>
+&lt;/div></codelab-snippet>
+          </p>
+          <span class="notice-01">※ 对不起，不支发送日文以外的歌词。</span>
+          <p>添加并更新下面的处理函数到 <span class="input-font">main.js</span> 中，它实现了点击按钮发送歌词的功能。<br>
+          添加 <code class="input-font">midioutput-updated:foo-output</code> 事件的事件处理函数。</p>
+            <codelab-snippet>
+window.addEventListener('midioutput-updated:foo-output', function(event) {
+  if(event.target.outputIdx!="false") {
+    document.addEventListener('keydown', keyDownEvent);
+    document.addEventListener('keyup', keyUpEvent);
+    midiout=document.querySelector("#foo-output");
+    document.getElementById("evy1text").addEventListener("click", evy1text); // ◀ 追加
+    document.getElementById("poke39text").addEventListener("click", poke39text); // ◀ 追加
+  } else {
+    document.removeEventListener('keydown', keyDownEvent);
+    document.removeEventListener('keyup', keyUpEvent);
+    document.getElementById("evy1text").removeEventListener("click", evy1text); // ◀ 追加
+    document.getElementById("poke39text").removeEventListener("click", poke39text); // ◀ 追加
+    midiout="";
+  }
+});</codelab-snippet>
+
+            <p>下面的代码最好添加到 script 文件末尾。</p>
+            <codelab-snippet>
+function evy1text() {
+  var text=document.getElementById("text").value;
+  var out=document.getElementById("evy1").convertText2SysEx(text);
+  sendSysEx2Device(out);
+  playTone(text.length);
+}
+function poke39text() {
+  var text=document.getElementById("text").value;
+  var out=document.getElementById("poke39").convertText2SysEx(text);
+  sendSysEx2Device(out);
+  playTone(text.length);
+}
+function sendSysEx2Device(msg) {
+  for(var i=0; i&lt;msg.sysEx.length; i++) {
+    midiout.sendRawMessage(msg.sysEx[i], 0);
+  }
+}
+function playTone(count) {
+  var interval=400; // (ms)
+  var noteNo=69; // A4
+  for(var i=1; i&lt;=count; i++) {
+    midiout.sendRawMessage([0x90, "0x"+(noteNo+i).toString(16), 0x7f], interval*i);
+    midiout.sendRawMessage([0x80, "0x"+(noteNo+i).toString(16), 0x7f], interval*(i+1));
+  }  
+}</codelab-snippet>
+          </p>
+          <p>如果点击发送按钮 eVY1 Shield 或 Poket-Miku 设备能够唱歌就成功了。</p>
+          <div class="flex-center">
+            <img src="./images/xwebmidi-12.png" width="580" class="bordered">
+          </div>
+
+        </p>
+
+      </codelab-article>
+
+    </codelab-pack>
+</template>
