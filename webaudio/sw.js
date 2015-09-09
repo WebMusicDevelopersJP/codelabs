@@ -1,6 +1,8 @@
 /* sw.js */
 var CACHE_NAME = 'codelabs-webaduio-cache';
 var urlsToCache = [
+    './images/webaudio-js-144x144.png',
+    './images/webmidi-js-144x144.png',
     './step.en-us.html',
     './step.ja-jp.html',
     './step.zh-cn.html',
