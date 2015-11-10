@@ -1,0 +1,64 @@
+<!doctype html>
+<html>
+  <head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#">
+    <meta charset="utf-8">
+    <title></title>
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#4285f4">
+    <meta property="og:url" content="https://webmusicdevelopers.appspot.com/codelabs/arduino-mocolufa/index.html" />
+    <meta property="og:title" content="Arduino MocoLUFA : Burn MOCO LUFA firm to your Arduino - Codelab" />
+    <meta property="og:image" content="https://webmusicdevelopers.appspot.com/codelabs/arduino-mocolufa/images/arduino-mocolufa-144x144.png" />
+    <meta property="og:description" content="This is a codelab for burning Moco LUFA to the Arduino." />
+    <meta property="og:site_name" content="Arduino MocoLUFA - Codelab" />
+    <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="manifest" href="./manifest.json">
+    <link rel="stylesheet" href="./css/main.css" type="text/css" />
+    <link rel="stylesheet" href="./bower_components/highlightjs/styles/railscasts.css" type="text/css" />
+
+    <script src="./bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+    <link rel="import" href="./bower_components/polymer/polymer-micro.html">
+
+    <!link rel="import" href="./components/import.html">
+    <link rel="import" href="./components/import_papers.html">
+    <link rel="import" href="./components/import_codelabs.html">
+
+    <link rel="import" href="./step.ja-jp.html" id="ja-jp">
+
+    <style is="custom-style">
+    .material-icons {
+      color: rgba(140, 140, 140, 1);
+    }
+    div.sample-input-01-blue {
+      background-color:rgb(237, 244, 255);
+      border-left: 4px solid #94BAF9;
+      padding:0.4em;
+      margin:1.0em;
+    }
+    paper-button.blue {
+      color: var(--paper-light-blue-500);
+      --paper-button-flat-focus-color: var(--paper-light-blue-50);
+    }
+    paper-dialog#modal {
+      width:50%;
+    }
+    </style>
+  </head>
+
+  <body unresolved>
+    <container id="steps"></container>
+
+    <paper-dialog id="modal" modal>
+      <p class="langdescription">Please select your preferred language.</p>
+      <p class="selectlang"></p>
+      <div class="buttons">
+        <!--paper-button dialog-confirm autofocus>Tap me to close</paper-button-->
+      </div>
+    </paper-dialog>
+
+    <script src="js/main.js"></script>
+    <!--script src="register_sw.js"></script-->
+  </body>
+</html>

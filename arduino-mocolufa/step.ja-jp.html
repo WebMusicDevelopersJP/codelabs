@@ -1,0 +1,383 @@
+<template>
+    <codelab-pack label="Arduino Moco LUFA" 
+                  feedback_link="https://github.com/ryoyakawai/web-arduino/issues"
+                  category=""
+                  environment="">
+
+      <!-- 1 -->
+      <codelab-article step_label="はじめに" duration="1:00">
+        <h2>利用背景</h2>
+        <p class="top">楽器向けのコントローラを製作する手軽なプラットフォームが現状ではあまりありません。そこで、<a href="https://twitter.com/morecat_lab" target="_blank">@morecat_lab</a>さんによって公開されている、Moco for LUFAというファームウェアをArduinoに書き込むことでを、ArduinoをUSB-MIDIデバイスにしてしまう、という手順です。</p>
+        
+        <h2>使うもの</h2>
+        <ul class="top">
+          <li><img src="./images/arduino-board.png" width="16px" class="middle"><a href="//www.arduino.cc/en/Main/ArduinoBoardUno" target="_blank">Arduino Uno</a> とUSBケーブル(A-Bタイプ)</li>
+          <li><img src="./images/jumper-pin.png" width="16px" class="middle">ジャンパーピン等、ショートさせられるモノ</li>
+          <li><img src="./images/dfu-programmer.png" width="16px" class="middle"><a href="//dfu-programmer.github.io/" target="_blank">dfu-programmer</a></li>
+          <li><img src="./images/firmware.png" width="16px" class="middle"><a href="//github.com/kuwatay/mocolufa/tree/master/HEX/" target="_blank">Moco for LUFAのファームウェア</a></li>
+        </ul>
+        <h2>実行可能なdfu-programmer</h2>
+        <ul class="top" style="list-style-type: none">
+          <li><i class="material-icons middle">file_download</i> dfu-programmer 
+            <ul style="list-style-type: none">
+              <li><img src="./images/windows_logo.png" width="16" class="middle"><a href="http://sourceforge.net/projects/dfu-programmer/files/dfu-programmer/0.7.0/">Windows用</a></li>
+              <li><img src="./images/apple-mac-logo.png" width="16" class="middle"><a href="./download/dfu-programmer.zip">Mac用</a> </li>
+            </ul>
+          </li><br>
+        (<a href="https://osdn.jp/projects/sfnet_dfu-programmer/" target="_blank">こちら</a>からのダウンロードも可)
+        </ul>
+      </codelab-article>
+
+      <!-- 2 -->
+      <codelab-article step_label="準備" duration="10:00">
+        <h2><img src="./images/arduino-board.png" width="20" class="middle">Arduino UNOを手元に用意する。</h2>
+        <p class="top">
+          <ul>
+            <li><a href="//www.switch-science.com/catalog/789/" target="_blank">スイッチサイエンスさん</a>（<a href="http://www.amazon.co.jp/%E3%82%B9%E3%82%A4%E3%83%83%E3%83%81%E3%82%B5%E3%82%A4%E3%82%A8%E3%83%B3%E3%82%B9-%E3%80%90%E6%B0%B8%E4%B9%85%E4%BF%9D%E8%A8%BC%E4%BB%98%E3%81%8D%E3%80%91Arduino-Uno/dp/B0044X2E5S" target="_blank">アマゾンさん</a>）から購入可能です。</li>
+            <li><a href="//www.switch-science.com/catalog/1033/" target="_blank">USBケーブル (A-Bタイプ)</a>が手元にない場合は、ご用意ください。</li>
+          </ul>
+        </p>
+
+        <h2><img src="./images/jumper-pin.png" width="20" class="middle">ジャンパーピンを用意する</h2>
+        <p class="top">
+          ジャンパーピンの場合は2.54mmピッチ用のモノをご用意ください。ブレッドボード・ジャンパー延長ワイヤ（メスーメス）のが汎用性は高いかもしれません。
+          <ul>
+            <li>ジャンパーピン(2.54mmピッチ)は<a href="http://akizukidenshi.com/catalog/g/gP-03687/" target="_blank">こちら</a> から購入可能です。</li>
+            <li>ブレッドボード・ジャンパー延長ワイヤ（メス－メス）<a href="http://akizukidenshi.com/catalog/g/gP-03475/" target="_blank">こちら</a>から購入可能です。</li>
+          </ul>
+        </p>
+
+        <h2><img src="./images/dfu-programmer.png" width="20" class="middle">dfu-programmerのダウンロード</h2>
+        <p class="top">
+          お手元のPCのプラットフォーム（Windows, Mac等）に合わせてダウンロードをお願いします。
+          <ul style="list-style:none;">
+            <li><img src="./images/windows_logo.png" width="16" class="middle">Windows： <a href="http://sourceforge.net/projects/dfu-programmer/files/dfu-programmer/" target="_blank"">こちら</a>から最新版(0.7.2:2015年11月現在)をダウンロード</li>
+            <li><img src="./images/apple-mac-logo.png" width="16" class="middle">Mac： <a href="http://localhost/~kawai/github/codelabs.git/arduino-mocolufa/download/dfu-programmer.zip" target="_blank">こちら</a></li>
+          </ul>
+        </p>
+
+        <h2><img src="./images/firmware.png" width="20" class="middle">Moco for LUFA Firmwareのダウンロード</h2>
+        <p class="top">
+          PCのプラットフォーム（Windows, Mac等）で共通です。
+          <ol>
+            <li><a href="https://github.com/kuwatay/mocolufa/blob/master/HEX/dualMoco.hex" target="_blank">dualMoco.hex</a>を開く</li>
+            <li>[RAW]を右クリックして[名前を付けてリンク先を保存(K)...]を選択してください</li>
+          </ol>
+          <div class="flex-center">
+            <img src="./images/savefirmware.png" width="420" class="bordered">
+          </div>
+        </p>
+        <br>
+        <p>以上で準備完了です。</p>
+
+      </codelab-article>
+
+      <!-- 3 -->
+      <codelab-article step_label="Arduinoの準備" duration="5:00">
+        <p>Moco for LUFAのFirmwareをArduinoに焼く前にArduinoの設定が必要です。<br>
+          <h3><i class="material-icons middle">build</i>Arduinoの準備</h3>
+          <p>Moco for LUFAのFirmwareを焼くためにはDFUモードで接続する必要があります。それには以下の作業を行います。
+            <ol>
+              <li>ピンヘッダ(ICSP端子)の5ピンと6ピンをショートさせる</li>
+              <div class="flex-center">
+                <figure>
+                  <img src="./images/arduino-board-SCSP2_short.png" width="420" class="">
+                  <figcaption class="figcap-center">図3.1 ショートさせるピン</figcaption>
+                </figure>
+              </div>
+              <div class="flex-center" style="margin-bottom:20px;">
+                <figure>
+                  <img src="./images/arduino-board-SCSP2_short-unplugged.png" width="420" class="bordered">
+                  <figcaption class="figcap-center">図3.2 ジャンパピンでショート</figcaption>
+                </figure>
+              </div>
+              <li>ショートさせたまま、電源を投入（USBケーブルでPCと接続）</li>
+              <div class="flex-center" style="margin-bottom:20px;">
+                <figure>
+                  <img src="./images/arduino-short56-on.png" width="420" class="bordered">
+                  <figcaption class="figcap-center">図3.3 ショートさせたままUSBケーブルを接続して電源投入</figcaption>
+                </figure>
+              </div>
+              <li>Arduino UNOの電源LEDが点灯したらショートを解除する</li>
+              <div class="flex-center">
+                <figure>
+                  <img src="./images/arduino-short56-off.png" width="420" class="bordered">
+                  <figcaption class="figcap-center">図3.4 電源を投入した状態でジャンパピンを抜取りショートを解除</figcaption>
+                </figure>
+              </div>
+            </ol>
+          </p>
+        </p>
+        <br>
+        <p>以上でArduinoの準備完了です。<br>
+          電源を投入したまま（USBケーブルを差した状態で）、次のステップへ進んでください。
+        </p>
+
+      </codelab-article>
+
+
+      <!-- 4 -->
+      <codelab-article step_label="dfu-programmerの準備" duration="5:00">
+        <p class="top">
+          <p>WindowsとMacでは少々手順が違います。それぞれの項目をご覧ください。</p>
+          <div class="indent15">
+            <h3><img src="./images/windows_logo.png" width="18" class="middle">Windows</h3>
+            <div class="indent15">
+              <h4><i class="material-icons middle">settings</i> ダウンロードしたファイルを展開＆ドライバを移動＆名前変更</h4>
+              <p class="top">
+                <ol>
+                  <li><a href="http://sourceforge.net/projects/dfu-programmer/files/dfu-programmer/" target="_blank">ここ</a>（もしくは<a href="        (<a href="https://osdn.jp/projects/sfnet_dfu-programmer/" target="_blank">ここ</a>）からダウンロードした 
+                    <code>dfu-programmer-hoge-x.y.z.zip</code> を適当なディレクトリに保存します。（ここでは <code>c:\tmp\</code> に保存して進めます）
+                    <div class="flex-center">
+                      <figure>
+                        <img src="./images/dfu-win-00.png" width="420" class="bordered">
+                        <figcaption class="figcap-center">図4.1 <code>c:\tmp\</code> にファイルを配置</figcaption>
+                      </figure>
+                    </div>
+                  </li>
+                  <li><code>dfu-programmer-hoge-x.y.z.zip</code> をダブルクリック等で解凍します。以下のファイル達が現れます。</li>
+                  <div class="flex-center">
+                    <figure>
+                      <img src="./images/dfu-win-01.png" width="420" class="bordered">
+                      <figcaption class="figcap-center">図4.2 解凍によって出現したファイル達</figcaption>
+                    </figure>
+                  </div>
+                  <li><code>libusb0_x86.dll</code> を <code>dfu-programmer.exe</code> と同じディレクトリに移動します。移動する <code>libusb0_x86.dll</code>　は解凍して出現した中の <code>dfu-prog-usb-1.x.x\x86\</code> ディレクトリにあります。</li>
+                  <div class="flex-center">
+                    <figure>
+                      <img src="./images/dfu-win-02.png" width="440" class="bordered">
+                      <figcaption class="figcap-center">図4.3 <code>libusb0_x86.dll</code> のありか</figcaption>
+                    </figure>
+                  </div>
+                  <div class="flex-center" style="margin-bottom:20px;">
+                    <figure>
+                      <img src="./images/dfu-win-03.png" width="420" class="bordered">
+                      <figcaption class="figcap-center">図4.4 <code>libusb0_x86.dll</code> を移動</figcaption>
+                    </figure>
+                  </div>
+                  <li>最後に移動した <code>libusb0_x86.dll</code> を <code>libusb0.dll</code> に名前を変更します。 </li>
+                  <div class="flex-center">
+                    <figure>
+                      <img src="./images/dfu-win-04.png" width="420" class="bordered">
+                      <figcaption class="figcap-center">図4.5 ファイル名を <code>libusb0_x86.dll</code> から変更</figcaption>
+                    </figure>
+                  </div>
+                  <li>ついでに Moco for LUFA Firmware も同じディレクトリ配置しちゃいましょう。（ダウンロード方法は <a href="index.html?ja-jp#2" target="_blank">[2.準備]>[Moco for LUFA Firmwareのダウンロード]</a> をご覧ください） </li>
+                  <div class="flex-center">
+                    <figure>
+                      <img src="./images/dfu-win-05.png" width="420" class="bordered">
+                      <figcaption class="figcap-center">図4.6 <code>dualMoco.hex</code> を配置</figcaption>
+                    </figure>
+                  </div>
+                </ol>
+                <p>それでは動作を確認してみましょう。<code>コマンドプロンプト</code>を立ち上げて、<code>dfu-programmer</code> があるディレクトリに移動します。
+移動作のディレクトリで <code>dfu-pgogrammer.exe --targets</code> とコマンドを打ち込んでみましょう。<br>
+以下のように対応しているチップ名の一覧が表示されたら <code>dfu-programmer</code> の準備は完了です。</p>
+                <div class="">
+                  <codelab-snippet>
+C:\>cd C:\tmp\dfu-programmer-win-0.7.2
+C:\tmp\dfu-programmer-win-0.7.2>dfu-pgogrammer --targets
+8051 based controllers:
+    at89c51snd1c       at89c51snd2c       at89c5130          at89c5131
+    at89c5132
+AVR based controllers:
+    at90usb1287        at90usb1286        at90usb1287-4k     at90usb1286-4k
+    at90usb647         at90usb646         at90usb162         at90usb82
+    atmega32u6         atmega32u4         atmega32u2         atmega16u4
+    atmega16u2         atmega8u2
+AVR32 based controllers:
+    at32uc3a0128       at32uc3a1128       at32uc3a0256       at32uc3a1256
+    at32uc3a0512       at32uc3a1512       at32uc3a0512es     at32uc3a1512es
+    at32uc3a364        at32uc3a364s       at32uc3a3128       at32uc3a3128s
+    at32uc3a3256       at32uc3a3256s      at32uc3a4256s      at32uc3b064
+    at32uc3b164        at32uc3b0128       at32uc3b1128       at32uc3b0256
+    at32uc3b1256       at32uc3b0256es     at32uc3b1256es     at32uc3b0512
+    at32uc3b1512       at32uc3c064        at32uc3c0128       at32uc3c0256
+    at32uc3c0512       at32uc3c164        at32uc3c1128       at32uc3c1256
+    at32uc3c1512       at32uc3c264        at32uc3c2128       at32uc3c2256
+    at32uc3c2512
+XMEGA based controllers:
+    atxmega64a1u       atxmega128a1u      atxmega64a3u       atxmega128a3u
+    atxmega192a3u      atxmega256a3u      atxmega16a4u       atxmega32a4u
+    atxmega64a4u       atxmega128a4u      atxmega256a3bu     atxmega64b1
+    atxmega128b1       atxmega64b3        atxmega128b3       atxmega64c3
+    atxmega128c3       atxmega256c3       atxmega384c3       atxmega16c4
+    atxmega32c4
+</codelab-snippet>
+
+                </div>
+              </p>
+            </div>
+          </div>
+        </p>
+        <br>
+
+        <div class="indent15">
+          <h3><img src="./images/apple-mac-logo.png" width="24" class="middle">Mac</h3>
+          <div class="indent15">
+            <h4><i class="material-icons middle">settings</i> ダウンロードしたファイルを展開</h4>
+            <p class="top">
+              <ol>
+                <li><a href="./download/dfu-programmer.zip" target="_blank">ここ</a> からダウンロードして 適当なディレクトリに保存します。（ここでは <code>~/tmp/dfu-programmer/</code> に保存して進めます）
+                  <div class="">
+                    <codelab-snippet>
+$ cd ~/tmp/dfu-programmer/;
+$ unzip dfu-programmer.zip;
+Archive:  dfu-programmer.zip
+  inflating: dfu-programmer
+</codelab-snippet>
+
+              </p>
+                </li>
+                <li>続いて Moco for LUFA をダウンロードします。
+                  <div class="">
+                    <codelab-snippet>
+$ wget https://github.com/kuwatay/mocolufa/raw/master/HEX/dualMoco.hex;
+--2015-11-11 01:04:08--  https://github.com/kuwatay/mocolufa/raw/master/HEX/dualMoco.hex
+Resolving github.com... 192.30.252.129
+Connecting to github.com|192.30.252.129|:443... connected.
+HTTP request sent, awaiting response... 302 Found
+Location: https://raw.githubusercontent.com/kuwatay/mocolufa/master/HEX/dualMoco.hex [following]
+--2015-11-11 01:04:09--  https://raw.githubusercontent.com/kuwatay/mocolufa/master/HEX/dualMoco.hex
+Resolving raw.githubusercontent.com... 103.245.222.133
+Connecting to raw.githubusercontent.com|103.245.222.133|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 16222 (16K) [text/plain]
+Saving to: 'dualMoco.hex'
+
+dualMoco.hex                       100%[==================================================================>]  15.84K  --.-KB/s   in 0.003s 
+
+2015-11-11 01:04:10 (5.20 MB/s) - 'dualMoco.hex' saved [16222/16222]
+</codelab-snippet>
+ダウンロード完了後に以下のような構成になっていたら完了です。
+<codelab-snippet>
+$ ls -R; 
+dfu-programmer  dualMoco.hex</codelab-snippet>
+                  </div>
+                </li>
+              </ol>
+              <p>それでは動作を確認してみましょう。<code>ターミナル</code>を立ち上げて、<code>dfu-programmer.exe</code> があるディレクトリに移動します。
+移動作のディレクトリで <code>dfu-pgogrammer --targets</code> とコマンドを打ち込んでみましょう。<br>
+以下のように対応しているチップ名の一覧が表示されたら <code>dfu-programmer</code> の準備は完了です。</p>
+              <div class="">
+                <codelab-snippet>
+$ ./dfu-programmer --targets;
+8051 based controllers:
+    at89c51snd1c       at89c51snd2c       at89c5130          at89c5131       
+    at89c5132       
+AVR based controllers:
+    at90usb1287        at90usb1286        at90usb1287-4k     at90usb1286-4k  
+    at90usb647         at90usb646         at90usb162         at90usb82       
+    atmega32u6         atmega32u4         atmega32u2         atmega16u4      
+    atmega16u2         atmega8u2       
+AVR32 based controllers:
+    at32uc3a0128       at32uc3a1128       at32uc3a0256       at32uc3a1256    
+    at32uc3a0512       at32uc3a1512       at32uc3a0512es     at32uc3a1512es  
+    at32uc3a364        at32uc3a364s       at32uc3a3128       at32uc3a3128s   
+    at32uc3a3256       at32uc3a3256s      at32uc3a4256s      at32uc3b064     
+    at32uc3b164        at32uc3b0128       at32uc3b1128       at32uc3b0256    
+    at32uc3b1256       at32uc3b0256es     at32uc3b1256es     at32uc3b0512    
+    at32uc3b1512       at32uc3c064        at32uc3c0128       at32uc3c0256    
+    at32uc3c0512       at32uc3c164        at32uc3c1128       at32uc3c1256    
+    at32uc3c1512       at32uc3c264        at32uc3c2128       at32uc3c2256    
+    at32uc3c2512    
+XMEGA based controllers:
+    atxmega64a1u       atxmega128a1u      atxmega64a3u       atxmega128a3u   
+    atxmega192a3u      atxmega256a3u      atxmega16a4u       atxmega32a4u    
+    atxmega64a4u       atxmega128a4u      atxmega256a3bu     atxmega64b1     
+    atxmega128b1       atxmega64b3        atxmega128b3       atxmega64c3     
+    atxmega128c3       atxmega256c3       atxmega384c3       atxmega16c4     
+    atxmega32c4     
+</codelab-snippet>
+              </div>
+              <br>
+              <p>ちなみに、Arudino UNO は ATmega16U2 を積んでいて、ここに配置されています。
+                <div class="flex-center">
+                  <figure>
+                    <img src="./images/arduino-board-SCSP2_atmega16u2.png" width="420" class="">
+                    <figcaption class="figcap-center">図4.7 Arduino UNO R3 上の ATmega16U2</figcaption>
+                  </figure>
+                </div>
+              </p>
+                  </div></div>
+      </codelab-article>
+
+
+
+      <!-- 5 -->
+      <codelab-article step_label="Moco for LUFAを焼く" duration="5:00">
+        <p class="top">
+          <p>WindowsとMacでは少々手順が違います。それぞれの項目をご覧ください。</p>
+          <div class="indent15">
+            <h3><img src="./images/windows_logo.png" width="18" class="middle">Windows</h3>
+            <div class="indent15">
+              <h4><i class="material-icons middle">settings</i> 以下のようにコマンドを実行してください。</h4>
+              <p class="top">
+                <div class="">
+                  <codelab-snippet>
+C:\tmp\dfu-programmer-win-0.7.2>dfu-programmer.exe atmega16u2 erase;
+Checking memory from 0x0 to 0x2FFF...  Not blank at 0x1.
+Erasing flash...  Success
+Checking memory from 0x0 to 0x2FFF...  ERROR. </codelab-snippet>
+                  <span class="notice-01">※ エラーがでますが気にしないでください。<code>Erasing flash...  Success</code> がでたらOKです。</span>
+                  <codelab-snippet>
+C:\tmp\dfu-programmer-win-0.7.2>dfu-programmer.exe atmega16u2 flash dualMoco.hex; 
+Checking memory from 0x0 to 0x167F...  Empty.
+0%                            100%  Programming 0x1680 bytes...
+[>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>]  Success
+0%                            100%  Reading 0x3000 bytes...
+[>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>]  Success
+Validating...  Success
+0x1680 bytes written into 0x3000 bytes memory (46.88%).</codelab-snippet>
+<codelab-snippet>
+C:\tmp\dfu-programmer-win-0.7.2>dfu-programmer.exe atmega16u2 reset;</codelab-snippet>
+
+                </div>
+              </p>
+            </div>
+          </div>
+
+          <div class="indent15">
+            <h3><img src="./images/apple-mac-logo.png" width="24" class="middle">Mac</h3>
+            <div class="indent15">
+              <h4><i class="material-icons middle">settings</i> 以下のように3つのコマンドを実行してください。</h4>
+              <p class="top">
+                <div class="">
+                  <codelab-snippet>
+$ ./dfu-programmer atmega16u2 erase;
+Checking memory from 0x0 to 0x2FFF...  Not blank at 0x1.
+Erasing flash...  Success
+Checking memory from 0x0 to 0x2FFF...  ERROR. </codelab-snippet>
+                  <span class="notice-01">※ エラーがでますが気にしないでください。<code>Erasing flash...  Success</code> がでたらOKです。</span>
+                  <codelab-snippet>
+$ ./dfu-programmer atmega16u2 flash dualMoco.hex; 
+Checking memory from 0x0 to 0x167F...  Empty.
+0%                            100%  Programming 0x1680 bytes...
+[>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>]  Success
+0%                            100%  Reading 0x3000 bytes...
+[>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>]  Success
+Validating...  Success
+0x1680 bytes written into 0x3000 bytes memory (46.88%).</codelab-snippet>
+<codelab-snippet>
+$ ./dfu-programmer atmega16u2 reset;</codelab-snippet>
+
+                </div>
+              </p>
+            </div>
+          </div>
+          <div>
+            以上でMoco for LUFA焼く作業は完了です。
+          </div>
+        </p>
+      </codelab-article>
+
+      <!-- 6 -->
+      <codelab-article step_label="MIDI機器になったか確認" duration="5:00">
+      </codelab-article>
+
+      <!-- 7 -->
+      <codelab-article step_label="おまけ" duration="15:00">
+     </codelab-article>
+
+    </codelab-pack>
+</template>

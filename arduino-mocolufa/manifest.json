@@ -1,0 +1,12 @@
+{
+  "lang": "ja",
+  "name": "Arduino MocoLUFA Codelab",
+  "short_name": "Arduino MocoLufa Codelab",
+  "icons": [{
+        "src": "./images/arduino-mocolufa-144x144.png",
+        "sizes": "144x144",
+        "type": "image/png"
+      }],
+  "start_url": "https://webmusicdevelopers.appspot.com/codelabs/arduino-mocolufa/index.html",
+  "display": "standalone"
+}
