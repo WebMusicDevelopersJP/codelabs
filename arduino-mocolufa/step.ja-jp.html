@@ -10,7 +10,7 @@
         <p class="top">楽器向けのコントローラを製作する手軽なプラットフォームが現状ではあまりありません。そこで、<a href="https://twitter.com/morecat_lab" target="_blank">@morecat_lab</a>さんによって公開されている、Moco for LUFAというファームウェアをArduinoに書き込むことでを、ArduinoをUSB-MIDIデバイスにしてしまう、という手順です。</p>
         
         <h2>使うもの</h2>
-        <ul class="top">
+        <ul class="top" style="list-style-type: none">
           <li><img src="./images/arduino-board.png" width="16px" class="middle"><a href="//www.arduino.cc/en/Main/ArduinoBoardUno" target="_blank">Arduino Uno</a> とUSBケーブル(A-Bタイプ)</li>
           <li><img src="./images/jumper-pin.png" width="16px" class="middle">ジャンパーピン等、ショートさせられるモノ</li>
           <li><img src="./images/dfu-programmer.png" width="16px" class="middle"><a href="//dfu-programmer.github.io/" target="_blank">dfu-programmer</a></li>
@@ -75,7 +75,7 @@
       <!-- 3 -->
       <codelab-article step_label="Arduinoの準備" duration="5:00">
         <p>Moco for LUFAのFirmwareをArduinoに焼く前にArduinoの設定が必要です。<br>
-          <h3><i class="material-icons middle">build</i>Arduinoの準備</h3>
+          <!--<h3<i class="material-icons middle">build</i> Arduinoの準備</h3>-->
           <p>Moco for LUFAのFirmwareを焼くためにはDFUモードで接続する必要があります。それには以下の作業を行います。
             <ol>
               <li>ピンヘッダ(ICSP端子)の5ピンと6ピンをショートさせる</li>
@@ -373,10 +373,76 @@ $ ./dfu-programmer atmega16u2 reset;</codelab-snippet>
 
       <!-- 6 -->
       <codelab-article step_label="MIDI機器になったか確認" duration="0:00">
+        <p class="top">
+          <h3><i class="material-icons">build</i> ここで確認</h3>
+          <div class="indent15">
+            <div class="flex-center">
+              <iframe src="https://ryoyakawai.github.io/web-arduino/web/check-mocolufa.html" width="600" height="380" scrolling="no" frameborder="0"></iframe>
+            </div>
+          </div>
+          <h3><i class="material-icons">exit_to_app</i> Webサイトにアクセスして確認</h3>
+          <div class="indent15">
+            <p>
+              <ol>
+                <li>ArduinoからUSBのケーブルを一度PCから抜いてください。</li>
+                <li>ご利用のPlatformに合わせて <img src="./images/chrome_flat_by_packrobottom.png" width="20" class="middle"><a href="//www.google.co.jp/chrome/browser/" target="_blank">Google Chrome</a> をダウンロードしてインストールしてください。</li>
+                <li>Google Chrome で <a href="https://ryoyakawai.github.io/web-arduino/web/check-mocolufa.html" target="_blank">ここ</a> を表示します。</li>
+                <li>ArduinoにUSBのケーブルをPCに接続してください。数秒後に以下のように緑色の丸が正常に接続されたことを示しています。</li>
+              </ol>
+              <div class="flex-center">
+                <figure>
+                  <img src="./images/mocolufa-connected.png" width="420" class="bordered">
+                  <figcaption class="figcap-center">図6.1 Moco for LUFAを焼いたArduinoが接続された時の画面</figcaption>
+                </figure>
+              </div>
+          </div>
+        </p>
       </codelab-article>
 
       <!-- 7 -->
-      <codelab-article step_label="おまけ" duration="0:00">
+      <codelab-article step_label="おまけ：ブラウザでLチカ" duration="0:00">
+        <p class="top">
+          <p><a href="https://github.com/ryoyakawai/web-arduino">Web-Arduino</a> を使ってブラウザでLチカ（LEDを光らせる）をしてみます。</p>
+          <div class="indent15">
+            <p>
+              <ol>
+                <li>ArduinoからUSBのケーブルを一度PCから抜いて、以下のピンをショート（接続）してます。</li>
+                <div class="flex-center">
+                  <figure>
+                    <img src="./images/arduino-board-SCSP2_sendPrg.png" width="420" class="">
+                    <figcaption class="figcap-center">図7.1 ジャンパの設定</figcaption>
+                  </figure>
+                </div>
+                <li><a href="https://www.arduino.cc/en/Main/Software" target="_blank">ここ</a> からPlatformに合った Arduino IDE をダウンロードしてインストール。</li>
+                <li> <code>2..</code> でインストールしたArduino IDEを使って、Arduinoへプログラムを転送します。Arduino IDE を起動し <a href="https://github.com/ryoyakawai/web-arduino/blob/gh-pages/arduino/web-arduino/web-arduino.ino" target="_blank">これ</a>をコピー＆ペーストして、Arduino に転送してください。</li>
+                <div class="flex-center">
+                  <figure>
+                    <img src="./images/transfer_ino.png" width="420" class="bordered">
+                    <figcaption class="figcap-center">図7.2 プログラム転送画面</figcaption>
+                  </figure>
+                </div>
+                <li>転送完了後、USBケーブルを抜き、ジャンパでのショートを解除します。</li>
+                <div class="flex-center">
+                  <figure>
+                    <img src="./images/arduino-board-SCSP2.png" width="420" class="">
+                    <figcaption class="figcap-center">図7.3 ジャンパの設定</figcaption>
+                  </figure>
+                </div>
+                <li>Arduinoに電源が投入されていない状態でLEDを追加します。LEDの長い端子を <code>13番</code> ピンに、短い端子を <code>GND</code>に接続します。</li>
+                <div class="flex-center">
+                  <figure>
+                    <img src="./images/arduino-board-SCSP2_LED.png" width="420" class="">
+                    <figcaption class="figcap-center">図7.4 LEDの接続箇所</figcaption>
+                  </figure>
+                </div>
+                <li>ArduinoにUSBのケーブルを接続して電源を投入します。</li>
+                <li>次に <img src="./images/chrome_flat_by_packrobottom.png" width="20" class="middle"> で <a href="http://ryoyakawai.github.io/web-arduino/web/blink13.html" target="_blank">13ピンLチカ</a>を表示。</li>
+                <li>ブラウザ画面上の「Pin 13 ON」ボタンを押すと、LEDが光ります。</li>
+              </ol>
+              複数のLEDを制御する場合は <a href="http://ryoyakawai.github.io/web-arduino/web/blinkwithblink.html" target="_blank">Blink with Blink</a> が便利です。
+            </p>
+          </div>
+       </p>
      </codelab-article>
 
     </codelab-pack>
