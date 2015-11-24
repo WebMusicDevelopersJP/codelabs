@@ -13,23 +13,15 @@
         <ul class="top" style="list-style-type: none">
           <li><img src="./images/arduino-board.png" width="16px" class="middle"><a href="//www.arduino.cc/en/Main/ArduinoBoardUno" target="_blank">Arduino Uno</a> とUSBケーブル(A-Bタイプ)</li>
           <li><img src="./images/jumper-pin.png" width="16px" class="middle">ジャンパーピン等、ショートさせられるモノ</li>
-          <li><img src="./images/dfu-programmer.png" width="16px" class="middle"><a href="//dfu-programmer.github.io/" target="_blank">dfu-programmer</a></li>
-          <li><img src="./images/firmware.png" width="16px" class="middle"><a href="//github.com/kuwatay/mocolufa/tree/master/HEX/" target="_blank">Moco for LUFAのファームウェア</a></li>
+          <li><img src="./images/dfu-programmer.png" width="16px" class="middle">dfu-programmer</li>
+          <span class="notice-01">※ Macの場合はhomebrewからインストールをおすすめします。</span>
+          <li><img src="./images/firmware.png" width="16px" class="middle">>Moco for LUFAのファームウェア</li>
         </ul>
-        <h2>実行可能なdfu-programmer</h2>
-        <ul class="top" style="list-style-type: none">
-          <li><i class="material-icons middle">file_download</i> dfu-programmer 
-            <ul style="list-style-type: none">
-              <li><img src="./images/windows_logo.png" width="16" class="middle"><a href="http://sourceforge.net/projects/dfu-programmer/files/dfu-programmer/0.7.0/">Windows用</a></li>
-              <li><img src="./images/apple-mac-logo.png" width="16" class="middle"><a href="./download/dfu-programmer.zip">Mac用</a> </li>
-            </ul>
-          </li><br>
-        (<a href="https://osdn.jp/projects/sfnet_dfu-programmer/" target="_blank">こちら</a>からのダウンロードも可)
-        </ul>
+        <p>次のStepではハードウェアを揃えます。</p>
       </codelab-article>
 
       <!-- 2 -->
-      <codelab-article step_label="準備" duration="10:00">
+      <codelab-article step_label="ハードウェアを揃える" duration="10:00">
         <h2><img src="./images/arduino-board.png" width="20" class="middle">Arduino UNOを手元に用意する。</h2>
         <p class="top">
           <ul>
@@ -47,12 +39,13 @@
           </ul>
         </p>
 
+<!--
         <h2><img src="./images/dfu-programmer.png" width="20" class="middle">dfu-programmerのダウンロード</h2>
         <p class="top">
           お手元のPCのプラットフォーム（Windows, Mac等）に合わせてダウンロードをお願いします。
           <ul style="list-style:none;">
             <li><img src="./images/windows_logo.png" width="16" class="middle">Windows： <a href="http://sourceforge.net/projects/dfu-programmer/files/dfu-programmer/" target="_blank"">こちら</a>から最新版(0.7.2:2015年11月現在)をダウンロード</li>
-            <li><img src="./images/apple-mac-logo.png" width="16" class="middle">Mac： <a href="https://webmusicdevelopers.appspot.com/codelabs/arduino-mocolufa/download/dfu-programmer.zip" target="_blank">こちら</a></li>
+            <li><img src="./images/apple-mac-logo.png" width="16" class="middle">Mac： <a href="https://webmusicdevelopers.appspot.com/codelabs/arduino-mocolufa/download/dfu-programmer.zip" target="_blank">[ソースからコンパイル]</a>、</li>
           </ul>
         </p>
 
@@ -68,7 +61,8 @@
           </div>
         </p>
         <br>
-        <p>以上で準備完了です。</p>
+-->
+        <p>以上で完了です。</p>
 
       </codelab-article>
 
@@ -79,6 +73,7 @@
           <p>Moco for LUFAのFirmwareを焼くためにはDFUモードで接続する必要があります。それには以下の作業を行います。
             <ol>
               <li>ピンヘッダ(ICSP端子)の5ピンと6ピンをショートさせる</li>
+              <span class="notice-01">※ <code>ショート</code>とは日本語では<b>短絡</b>と言い、端子と端子を直結させることです。</span>
               <div class="flex-center">
                 <figure>
                   <img src="./images/arduino-board-SCSP2_short.png" width="420" class="">
@@ -215,16 +210,22 @@ XMEGA based controllers:
         <div class="indent15">
           <h3><img src="./images/apple-mac-logo.png" width="24" class="middle">Mac</h3>
           <div class="indent15">
-            <h4><i class="material-icons middle">settings</i> ダウンロードしたファイルを展開</h4>
+            <h4><i class="material-icons middle">settings</i> Homebrewからインストール</h4>
             <p class="top">
               <ol>
-                <li><a href="./download/dfu-programmer.zip" target="_blank">ここ</a> からダウンロードして 適当なディレクトリに保存します。（ここでは <code>~/tmp/dfu-programmer/</code> に保存して進めます）
+                <li><a href="http://brew.sh/index_ja.html" target="_blank">ここ</a> に書いてあるように <code>Homebrew</code> のインストールを行います。
                   <div class="">
                     <codelab-snippet>
-$ cd ~/tmp/dfu-programmer/;
-$ unzip dfu-programmer.zip;
-Archive:  dfu-programmer.zip
-  inflating: dfu-programmer
+$ ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)";
+</codelab-snippet>
+
+              </p>
+                </li>
+                <li>次に <code>dfu-programmer</code> と <code>wget</code> のインストールを行います。
+                  <div class="">
+                    <codelab-snippet>
+$ brew install dfu-programmer;
+$ brew install wget;
 </codelab-snippet>
 
               </p>
@@ -414,7 +415,7 @@ $ ./dfu-programmer atmega16u2 reset;</codelab-snippet>
                   </figure>
                 </div>
                 <li><a href="https://www.arduino.cc/en/Main/Software" target="_blank">ここ</a> からPlatformに合った Arduino IDE をダウンロードしてインストール。</li>
-                <li> <code>2..</code> でインストールしたArduino IDEを使って、Arduinoへプログラムを転送します。Arduino IDE を起動し <a href="https://github.com/ryoyakawai/web-arduino/blob/gh-pages/arduino/web-arduino/web-arduino.ino" target="_blank">これ</a>をコピー＆ペーストして、Arduino に転送してください。</li>
+                <li> <code>2.</code> でインストールしたArduino IDEを使って、Arduinoへプログラムを転送します。Arduino IDE を起動後 <a href="https://github.com/ryoyakawai/web-arduino/blob/gh-pages/arduino/web-arduino/web-arduino.ino" target="_blank">これ</a> をコピー＆ペーストして、Arduino に転送してください。</li>
                 <div class="flex-center">
                   <figure>
                     <img src="./images/transfer_ino.png" width="420" class="bordered">
