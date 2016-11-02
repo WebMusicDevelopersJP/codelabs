@@ -67,7 +67,7 @@
 var audioctx = new AudioContext();
 var osc = audioctx.createOscillator();
 osc.connect(audioctx.destination);
-function Play() {
+const Play = () =&gt; {
   osc.start(0);
 }
 &lt;/script></codelab-snippet>
@@ -121,7 +121,7 @@ var depth = audioctx.createGain();
 vco.connect(audioctx.destination);
 lfo.connect(depth);
 depth.connect(vco.frequency); // &lt;== connect to frequency parameter of vco
-function Setup() {
+const Setup = () =&gt; {
   if(play == 0) {
     play = 1;
     vco.start(0);
@@ -179,25 +179,25 @@ function Setup() {
 &lt;script type="text/javascript">
 var audioctx = new AudioContext();
 var buffer = null;
-LoadSample(audioctx, "./snare.wav");
-function Play() {
+const Play = () =&gt; {
   var src = audioctx.createBufferSource();
   src.buffer = buffer;
   src.connect(audioctx.destination);
   src.start(0);
 }
-function LoadSample(ctx, url) {
+const LoadSample = (ctx, url) =&gt; {
   var req = new XMLHttpRequest();
   req.open("GET", url, true);
   req.responseType = "arraybuffer";
-  req.onload = function() {
+  req.onload = () =&gt; {
     if(req.response) {
-      ctx.decodeAudioData(req.response,function(b){buffer=b;},function(){});
+      ctx.decodeAudioData(req.response, (b) =&gt; {buffer=b;}, () =&gt; {});
       document.querySelector("button#playsound").removeAttribute("disabled");
     }
   }
   req.send();
 }
+LoadSample(audioctx, "./snare.wav");
 &lt;/script></codelab-snippet>
         
         <p>アプリケーションを実行し、実行画面内の <button id="step5">Play</button> ボタンをクリックするとスネアドラムの「パシッ」音が鳴れば完成です。</p>
@@ -258,7 +258,6 @@ function LoadSample(ctx, url) {
   var audioctx = new AudioContext();
  
   var buffer = null;
-  LoadSample(audioctx, "./loop.wav");
   var src = null;
   var input = audioctx.createGain(); 
   var delay = audioctx.createDelay(); 
@@ -274,18 +273,19 @@ function LoadSample(ctx, url) {
   wetgain.connect(audioctx.destination);
   drygain.connect(audioctx.destination);
 
-  function LoadSample(ctx, url) {
+  const LoadSample = (ctx, url) =&gt; {
     var req = new XMLHttpRequest();
     req.open("GET", url, true);
     req.responseType = "arraybuffer";
     req.onload = function () {
       if(req.response) {
-        ctx.decodeAudioData(req.response,function(b){buffer=b;},function(){});
+        ctx.decodeAudioData(req.response, (b) =&gt; {buffer=b;}, () =&gt; {});
         document.querySelector("button#playsound").removeAttribute("disabled");
       }
     }
     req.send();
   }
+  LoadSample(audioctx, "./loop.wav");
 &lt;/script></codelab-snippet> 
 
         <p class="bottom5px">Node Graph の説明です。</p>
@@ -300,7 +300,17 @@ function LoadSample(ctx, url) {
 「オーディオファイルを鳴らす」では HTML 内に Event Handler を書いていましたが、ここでは JavaScritp から Event Handler を指定する書き方をします。</p>
         <codelab-snippet>
 &lt;script type="text/javascript">
-  document.querySelector("button#playsound").addEventListener("click", function(event){
+  const Setup = () =&gt; {
+    var bypass = document.getElementById("bypass").checked;
+    delay.delayTime.value = parseFloat(document.getElementById("time").value);
+    feedback.gain.value = parseFloat(document.getElementById("feedback").value);
+    var mix = parseFloat(document.getElementById("mix").value);
+    if(bypass) mix = 0;
+      wetgain.gain.value = mix;
+      drygain.gain.value = 1 - mix;
+  }
+
+  document.querySelector("button#playsound").addEventListener("click", (event) =&gt; {
     var label; 
     if(event.target.innerHTML=="Stop") {
       src.stop(0);
@@ -320,15 +330,6 @@ function LoadSample(ctx, url) {
   document.querySelector("input#feedback").addEventListener("change", Setup);
   document.querySelector("input#mix").addEventListener("change", Setup);
 
-  function Setup() {
-    var bypass = document.getElementById("bypass").checked;
-    delay.delayTime.value = parseFloat(document.getElementById("time").value);
-    feedback.gain.value = parseFloat(document.getElementById("feedback").value);
-    var mix = parseFloat(document.getElementById("mix").value);
-    if(bypass) mix = 0;
-      wetgain.gain.value = mix;
-      drygain.gain.value = 1 - mix;
-  }
   Setup();
 &lt;/script></codelab-snippet>
 
@@ -381,20 +382,20 @@ function LoadSample(ctx, url) {
 var audioctx = new AudioContext();
 
 var buffer = null;
-LoadSample(audioctx, "./loop.wav");
 var src = null;
-function LoadSample(ctx, url) {
+const LoadSample = (ctx, url) =&gt; {
     var req = new XMLHttpRequest();
     req.open("GET", url, true);
     req.responseType = "arraybuffer";
-    req.onload = function() {
+    req.onload = () =&gt; {
         if(req.response) {
-            ctx.decodeAudioData(req.response,function(b){buffer=b;},function(){});
+            ctx.decodeAudioData(req.response, (b) =&gt; {buffer=b;}, () =&gt; {});
             document.querySelector("button#playsound").removeAttribute("disabled");
         }
     }
     req.send();
 }
+LoadSample(audioctx, "./loop.wav");
 
 var mode = 0;
 var timerId;
@@ -404,7 +405,7 @@ document.getElementById("min").value = analyser.minDecibels;
 document.getElementById("max").value = analyser.maxDecibels;
 var ctx = document.getElementById("graph").getContext("2d");
 
-function DrawGraph() {
+const DrawGraph = () =&gt; {
     ctx.fillStyle = "rgba(34, 34, 34, 1.0)";
     ctx.fillRect(0, 0, 512, 256);
     ctx.strokeStyle="rgba(255, 255, 255, 1)";
@@ -427,7 +428,7 @@ function DrawGraph() {
 }
 timerId=requestAnimationFrame(DrawGraph);
 
-function Setup() {
+const Setup = () =&gt; {
     mode = document.getElementById("mode").selectedIndex;
     analyser.minDecibels = parseFloat(document.getElementById("min").value);
     analyser.maxDecibels = parseFloat(document.getElementById("max").value);
@@ -448,7 +449,7 @@ Setup();
         <p class="bottom5px">最後に、ボタンを押した時の Event Hander を書きます。</p>
         <codelab-snippet>
 &lt;script type="text/javascript">
-document.querySelector("button#playsound").addEventListener("click", function(event){
+document.querySelector("button#playsound").addEventListener("click", (event) =&gt; {
     var label; 
     if(event.target.innerHTML=="Stop") {
         src.stop(0);
@@ -501,21 +502,21 @@ var getUserMedia = navigator.getUserMedia ? 'getUserMedia' :
     undefined;
 var astream, micsrc;
 var conditions={audio:true, video:false};
-function Mic() {
+const Mic = () =&gt; {
     navigator[getUserMedia](
         conditions,
-        function(stream) {
+        (stream) =&gt; {
             astream=stream;
             micsrc=audioctx.createMediaStreamSource(stream);
             micsrc.connect(audioctx.destination);
             micsrc.connect(analyser);
         },
-        function(e) { console.error(e); }
+        (e) =&gt; { console.error(e); }
     );
 }
 
 // event handler
-document.querySelector("button#startmic").addEventListener("click", function(event){
+document.querySelector("button#startmic").addEventListener("click", (event) =&gt; {
     var label;
     if(event.target.innerHTML=="Start Mic") {
         Mic();
@@ -572,7 +573,7 @@ document.querySelector("button#startmic").addEventListener("click", function(eve
         <codelab-snippet>
 &lt;button id="playsound" disabled>Start&lt;/button>&lt;br/>
 ReverbLevel : &lt;input type="range" id="revlevel" min="0" max="100" value="50"/>
-  &lt;span id="revdisp">50&lt;/span></codelab-snippet>
+&lt;span id="revdisp">50&lt;/span></codelab-snippet>
 
         <p class="bottom5px">次に JavaScript を追記します。</p>
         <codelab-snippet>
@@ -591,22 +592,22 @@ revlevel.connect(audioctx.destination);
 var buffers = [];
 var loadidx = 0;
 
-for(var i=0; i&lt;files.length; i++) {
-    LoadSample(audioctx, i);
-}
-function LoadSample(ctx, idx) {
+const LoadSample = (ctx, idx) =&gt; {
     var req = new XMLHttpRequest();
     req.open("GET", files[i], true);
     req.responseType = "arraybuffer";
-    req.onload = function() {
+    req.onload = () =&gt; {
         if(req.response) {
-            ctx.decodeAudioData(req.response,function(b){buffers[idx]=b;},function(){});
+            ctx.decodeAudioData(req.response, (b) =&gt; {buffers[idx]=b;}, () =&gt; {});
             if(files.length==buffers.length) {
                 document.querySelector("button#playsound").removeAttribute("disabled");
             }
         }
     }
     req.send();
+}
+for(var i=0; i&lt;files.length; i++) {
+    LoadSample(audioctx, i);
 }
 &lt;/script></codelab-snippet>
 
@@ -618,7 +619,7 @@ function LoadSample(ctx, idx) {
         <p class="bottom5px">最後に、ボタンを押した時の Event Hander を書きます。</p>
         <codelab-snippet>
 &lt;script type="text/javascript">
-document.querySelector("button#playsound").addEventListener("click", function(event){
+document.querySelector("button#playsound").addEventListener("click", (event) =&gt; {
     var label;
     if(event.target.innerHTML=="Stop") {
         src.stop(0);
@@ -635,10 +636,10 @@ document.querySelector("button#playsound").addEventListener("click", function(ev
     }
     event.target.innerHTML=label;
 });
-document.querySelector("input#revlevel").addEventListener("change", function(event){
+document.querySelector("input#revlevel").addEventListener("change", (event) =&gt; {
     var lev=event.target.value;
     revlevel.gain.value=parseInt(lev)*0.01;
-    event.target.nextSibling.innerHTML=lev;
+    document.querySelector("#revdisp").innerHTML=lev;
 });
 &lt;/script></codelab-snippet>
 
