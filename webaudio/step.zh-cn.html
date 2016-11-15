@@ -271,7 +271,7 @@ LoadSample(audioctx, "./snare.wav");
     var req = new XMLHttpRequest();
     req.open("GET", url, true);
     req.responseType = "arraybuffer";
-    req.onload = function () {
+    req.onload = () =&gt; {
       if(req.response) {
         ctx.decodeAudioData(req.response, (b) =&gt; {buffer=b;}, () =&gt; {});
         document.querySelector("button#playsound").removeAttribute("disabled");
@@ -514,7 +514,7 @@ document.querySelector("button#startmic").addEventListener("click", (event) =&gt
         Mic();
         label="Stop Mic";
     } else {
-        astream.stop();
+        (astream.getAudioTracks())[0].stop();
         label="Start Mic";
     }
     event.target.innerHTML=label;
