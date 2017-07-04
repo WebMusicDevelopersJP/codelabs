@@ -200,7 +200,7 @@ LoadSample(audioctx, "./snare.wav");
 
         <p>動作の流れは以下の通りです。</p>
         <ul style="list-style-type: decimal">
-          <li><code>XMLHttpRequest();</code> でサーバから音声ファイルを取得する</li>
+          <li><code>fetch()</code> でサーバから音声ファイルを取得する</li>
           <li><code>audioctx.createBufferSource();</code> で用意したバッファに音声データを格納する</li>
           <li><code>src.connect(audioctx.destination);</code> <span class="input-font">audioctx.destination</span> に接続し Node Graph を完成させる</li>
           <li>ボタン操作により、バッファ内のデータを再生する</li>

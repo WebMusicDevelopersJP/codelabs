@@ -193,7 +193,7 @@ LoadSample(audioctx, "./snare.wav");
 
         <p>过程如下：</p>
         <ul style="list-style-type: decimal">
-          <li>通过 <code>XMLHttpRequest();</code> 从服务端获取文件</li>
+          <li>通过 <code>fetch()</code> 从服务端获取文件</li>
           <li>复制声音数据到 <code>audioctx.createBufferSource();</code> 所创建的 buffer 中</li>
           <li>连接到 <span class="input-font">audioctx.destination</span> 完成节点图 <code>src.connect(audioctx.destination);</code> </li>
           <li>通过点击按钮播放 buffer 中的声音</li>

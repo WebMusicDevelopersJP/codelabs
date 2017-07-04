@@ -193,7 +193,7 @@ LoadSample(audioctx, "./snare.wav");
 
         <p>Algorithm is below.</p>
         <ul style="list-style-type: decimal">
-          <li>Fetching file by <code>XMLHttpRequest();</code> from server</li>
+          <li>Fetching file by <code>fetch()</code> from server</li>
           <li>Copy sound data to buffer is prepared by <code>audioctx.createBufferSource();</code></li>
           <li>Connecting to <span class="input-font">audioctx.destination</span> to complete Node Graph by<code>src.connect(audioctx.destination);</code> </li>
           <li>Play sound in the buffer by clicking/tapping button</li>
