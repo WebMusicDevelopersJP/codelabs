@@ -1,0 +1,631 @@
+<template>
+    <codelab-pack label="Web Audio API" 
+                  feedback_link="https://github.com/ryoyakawai/x-webmidi/issues"
+                  category=""
+                  environment="">
+
+      <!-- 1 -->
+      <codelab-article step_label="概述" duration="1:00">
+        <h2>背景</h2>
+        <p class="top">通过开发学习 Web Aduio API 的基本特性。</p>
+        
+        <h2>运行 Codelab 需要的工具</h2>
+        <ul class="top">
+          <li><img src="./images/chrome_flat_by_packrobottom.png" width="16px" class="middle"><a href="//www.google.co.jp/chrome/browser/" target="_blank">Google Chrome</a> 43+</li>
+          <li><img src="./images/chrome_dev_editor-logo.png" width="16px" class="middle"><a href="https://chrome.google.com/webstore/detail/chrome-dev-editor-develop/pnoffddplpippgcfjdhbmhkofpnaalpg" target="_blank">Chrome Dev Editor</a></li>
+        </ul>
+        <h2>鸣谢</h2>
+        <ul class="top" style="list-style-type: none; padding-left:20px;">
+          <li>本教程引用了 <a href="//twitter.com/g200kg" target="_blank">@g200kg</a> 编写的文章 <a href="http://www.g200kg.com/jp/docs/webaudio/" target="_blank">「Instruction of Web Audio API」的许多内容</a> , 使用了一些文章内容、示例代码和图表。非常感谢作者分享这些内容在这里使用。</li>
+        </ul>        
+      </codelab-article>
+
+      <!-- 2 -->
+      <codelab-article step_label="准备开发环境" duration="1:00">
+        <h2><img src="./images/chrome_flat_by_packrobottom.png" width="20" class="middle">安装 Google Chrome</h2>
+        <p class="top">访问<a href="//www.google.co.jp/chrome/browser/" target="_blank">这里</a>，点击“下载 Chrome”然后安装。</p>
+
+        <h2><img src="./images/chrome_dev_editor-logo.png" width="20" class="middle">安装 Chrome Dev Editor</h2>
+        <p class="top">请用 Chrome 打开 <a href="//chrome.google.com/webstore/detail/chrome-dev-editor-develop/pnoffddplpippgcfjdhbmhkofpnaalpg" target="_blank">这个 URL</a>，然后安装 Chrome Dev Editor 。</p>
+
+        <h2><i class="material-icons middle">folder_open</i>设置应用使用的目录。</h2>
+        <p>启动 Chrome Dev Editor<br>在 Chrome 地址栏中输入 <code>chrome://apps</code>, 然后点击 <b>Chrome Dev Editor</b> 启动。
+          <div class="flex-center">
+            <img src="./images/webaudio-launch.png" width="420" class="bordered">
+          </div>
+        </p>
+
+        <p>
+            点击左侧面板下方的 <i class="material-icons middle" style="color:rgba(210, 63, 49, 1);">add_circle</i> 按钮，在弹出窗口的 <span class="input-font">[CHOOSE FOLDER]</span> 区域指定工作目录。<br>
+          <span class="notice-01">※ 第一次启动 Chrome Deve Editor, 会出现一个窗口让你填写 "Project Name" 和 "Script type"。</span> 
+          <div class="flex-center">
+            <img src="./images/webaudio-00.png" width="420" class="bordered">
+          </div>
+          <p style="margin-bottom:2px;">这里我们按下面内容填写</p>
+          <div class="sample-input-01-blue" style="margin-top:2px;">
+              Project Name: <span class="input-font">test_webaudioapi</span><br>
+              Project type: <span class="input-font">JavaScript web app</span>
+          </div>
+        </p>
+      </codelab-article>
+
+      <!-- 3 -->
+      <codelab-article step_label="播放声音" duration="5:00">
+        <p>使用振荡器节点(Oscillator Node)播放声音。</p>
+
+        <p>复制黏贴下面代码到 <span class="input-font">index.html</span> 中。</p>
+
+        <codelab-snippet>
+&lt;button onclick="Play()">Play&lt;/button>
+&lt;script type="text/javascript">
+var audioctx = new AudioContext();
+var osc = audioctx.createOscillator();
+osc.connect(audioctx.destination);
+const Play = () =&gt; {
+  osc.start(0);
+}
+&lt;/script></codelab-snippet>
+        
+        <p>点击 Chrome Dev Editor 左上方的运行按钮 <i class="material-icons middle">play_arrow</i> 启动应用。</p>
+        <div class="flex-center">
+          <img src="./images/webaudio-01.png" width="520" class="bordered">
+        </div>
+
+        <p>点击浏览器窗口中 <button id="step3">Play</button> 按钮，能够听到声音就对了。这段代码没考虑停止声音的事情，需要刷新页面才能停止。</p>
+
+        <p>通过如下过程创建节点图(Node Graph)。</p>
+        <ul style="list-style-type: decimal">
+          <li>创建一个 AudioContext <code>new AudioContext();</code></li>
+          <li>创建一个振荡器 <code>audioctx.createOscillator();</code></li>
+          <li>连接到 <span class="input-font">destination</span> 完成节点图 <code>osc.connect(audioctx.destination);</code></li>
+          <li>通过点击按钮启动振荡器。</li>
+        </ul>
+
+        <p>振荡器是 Web Audio API 的基本部分之一，这些基本部分称为“节点”(Node)。默认有许多这种类型的基本节点可用。基本上使用 Web Audio API 创建应用程序的一种方法就是彼此连接这些节点，并创建节点图。</p>
+        <p>节点图的终点被称为目的节点 <span class="input-font">destination (destination node)</span>。目的节点在 AudioContext 构造的时候会被自动创建。连接到目的节点后，节点图就可以播放声音了。</p>
+
+        <p>另外，我们创建的这个节点图就像下面这样。</p>
+        <div class="flex-center">
+          <img src="./images/osc1.png" class="bordered">
+        </div>
+        <p><span class="notice-01">(接下来，我们不再解释如何启动应用程序了。)</span></p>
+      </codelab-article>
+
+
+      <!-- 4 -->
+      <codelab-article step_label="调节振荡器旋律" duration="5:00">
+
+        <p>振荡器可以创建声音，但声音有点单调。下面我们尝试用其他振荡器来调节振荡器的旋律。</p>
+        <p>删掉上一步我们在 <span class="input-font">index.html</span> 中添加的代码, 并添加下面的代码到 <span class="input-font">index.html</span> 中。</p>
+        <codelab-snippet>
+&lt;table>
+  &lt;tr>&lt;td>LFO Freq : &lt;/td>&lt;td>&lt;input type="text" size="10" id="lfofreq" value="5"/>&lt;/td>&lt;/tr>
+  &lt;tr>&lt;td>Depth : &lt;/td>&lt;td>&lt;input type="text" size="10" id="depth" value="10"/>&lt;/td>&lt;/tr>
+  &lt;tr>&lt;td>VCO Freq : &lt;/td>&lt;td>&lt;input type="text" size="10" id="vcofreq" value="440"/>&lt;/td>&lt;/tr>
+&lt;/table>
+&lt;br/>
+&lt;button onclick="Setup()">Set&lt;/button>&lt;br/>
+&lt;script type="text/javascript">
+var audioctx = new AudioContext();
+var play = 0;
+var vco = audioctx.createOscillator();
+var lfo = audioctx.createOscillator();
+var depth = audioctx.createGain();
+vco.connect(audioctx.destination);
+lfo.connect(depth);
+depth.connect(vco.frequency); // &lt;== connect to frequency parameter of vco
+const Setup = () =&gt; {
+  if(play == 0) {
+    play = 1;
+    vco.start(0);
+    lfo.start(0);
+  }
+  vco.frequency.value = parseFloat(document.getElementById("vcofreq").value);
+  lfo.frequency.value = parseFloat(document.getElementById("lfofreq").value);
+  depth.gain.value = parseFloat(document.getElementById("depth").value);
+}
+&lt;/script></codelab-snippet>
+        
+        <p class="bottom5px">完成之后应用就可以正常工作了。点击 <button id="step4">Set</button> 按钮播放声音。文本框中的参数影响声音的节奏，修改这些参数再重新点击 <button id="step4-set">Set</button> 按钮。</p>
+        <ul class="top">
+          <li><span class="input-font">VCO Freq = <span id="step4vcofreq">440</span></span></li> 
+          <li><span class="input-font">LFO Freq = <span id="step4lfofreq">5</span></span></li>
+          <li><span class="input-font">Depth = <span id="step4depth">10</span></span></li>
+        </ul>
+        <p class="bottom5px">名词解释：</p>
+        <ul class="top">
+          <li><span class="input-font">VCO</span> ： [Voltage-Controlled Oscillator] 由电压控制振荡器频率的振荡器的振荡器。</li>
+          <li><span class="input-font">LFO</span> ： [Low Frequency Oscillator Oscillator] 低频振荡器。</li>
+        </ul>
+
+        <p>基本思想是用一个振荡器控制发出声音的频率，用另一个振荡器控制声音的节奏。节奏的宽度称为 <span class="input-font">depth</span> 。</p>
+        <p>关于这一步中的节点图：</p>
+        <ul style="list-style-type: decimal">
+          <li>创建 AudioContext <code>new AudioContext();</code></li>
+          <li>创建发声振荡器 <code>audioctx.createOscillator();</code></li>
+          <li>创建控制发声振荡器频率的振荡器 <code>audioctx.createOscillator();</code> </li>
+          <li>创建控制 depth 参数的节点 <code>audioCtx.createGain();</code></li>
+          <li>连接到 <span class="input-font">audioctx.destination</span> 完成节点视图 <code>vco.connect(audioctx.destination);</code></li>
+          <li>连接到节奏 depth <code>lfo.connect(depth);</code></li>
+          <li>连接到发声振荡器 <code>depth.connect(vco.frequency);</code></li>
+          <li>通过点击按钮启动和更新振荡器参数</li>
+        </ul>
+
+        <p>本步骤所创建的节点图。</p>
+        <div class="flex-center">
+          <img src="./images/vibrato.png" class="bordered">
+        </div>
+        <br>
+      </codelab-article>
+
+
+      <!-- 5 -->
+      <codelab-article step_label="播放音频文件" duration="7:00">
+        <p>下载 <a href="contents/snare.wav"><span class="input-font">snare.wav</span></a> ， 然后把它拖到 Chrome Dev Editor 左侧面板对应的项目中(这里是"test_webaudioapi")"</p>
+        <div class="flex-center">
+          <img src="./images/webaudio-02.png" width="580" class="bordered">
+        </div>
+
+        <p>删除上一步添加到 <span class="input-font">index.html</span> 中的代码, 然后添加下的代码到 <span class="input-font">index.html</span> 中。</p>
+        <codelab-snippet>
+&lt;button onclick="Play()" id="playsound" disabled>Play&lt;/button>
+&lt;script type="text/javascript">
+var audioctx = new AudioContext();
+var buffer = null;
+const Play = () =&gt; {
+  var src = audioctx.createBufferSource();
+  src.buffer = buffer;
+  src.connect(audioctx.destination);
+  src.start(0);
+}
+const LoadSample = (ctx, url) =&gt; {
+  fetch(url).then( response =&gt; {
+    return response.arrayBuffer();
+  }).then( arrayBuffer =&gt; {
+    ctx.decodeAudioData(arrayBuffer, (b) =&gt; {buffer=b;}, () =&gt; {});
+    document.querySelector("button#playsound").removeAttribute("disabled");
+  });
+}
+LoadSample(audioctx, "./snare.wav");
+&lt;/script></codelab-snippet>
+        
+        <p>点击 <button id="step5">Play</button> 按钮能听到小鼓的声音就表示应用创建成功了。</p>
+
+        <p>过程如下：</p>
+        <ul style="list-style-type: decimal">
+          <li>通过 <code>XMLHttpRequest();</code> 从服务端获取文件</li>
+          <li>复制声音数据到 <code>audioctx.createBufferSource();</code> 所创建的 buffer 中</li>
+          <li>连接到 <span class="input-font">audioctx.destination</span> 完成节点图 <code>src.connect(audioctx.destination);</code> </li>
+          <li>通过点击按钮播放 buffer 中的声音</li>
+        </ul>
+
+        <p>本步骤所创建的节点图。</p>
+        <div class="flex-center">
+          <img src="./images/buffersource.png" class="bordered">
+        </div>
+        <br>
+      </codelab-article>
+
+      <!-- 6 -->
+      <codelab-article step_label="应用延迟效果" duration="5:00">
+        <p>本步骤我们要用一个持续时间较长的音频文件。<br>
+          所以请下载 <a href="contents/loop.wav"><span class="input-font">loop.wav</span></a> 文件，并把它拖到 Chrome Dev Editor 左侧面板的项目中("test_webaudioapi") 。</p>
+        <div class="flex-center">
+          <img src="./images/webaudio-02.png" width="580" class="bordered">
+        </div>
+
+        <p>接下来删除前一步 <span class="input-font">index.html</span> 中的代码，然后先把如下代码添加到 <span class="input-font">index.html</span> 中。</p>
+        <codelab-snippet>
+&lt;button id="playsound" disabled>Play&lt;/button>&lt;br/>
+&lt;table>
+  &lt;tr>&lt;td>Bypass :&lt;/td>&lt;td>&lt;input id="bypass" type="checkbox"/>&lt;/td>&lt;/tr>
+  &lt;tr>&lt;td>Time : &lt;/td>&lt;td>&lt;input type="text" size="8" id="time" value="0.25"/>&lt;/td>&lt;/tr>
+  &lt;tr>&lt;td>Feedback : &lt;/td>&lt;td>&lt;input type="text" size="8" id="feedback" value="0.4"/>&lt;/td>&lt;/tr>
+  &lt;tr>&lt;td>Mix : &lt;/td>&lt;td>&lt;input type="text" size="8" id="mix" value="0.4"/>&lt;/td>&lt;/tr>
+&lt;/table></codelab-snippet>
+        
+        <p>这一步，我们要创建的目标节点图如下。</p>
+        <div class="flex-center">
+          <img src="./images/delay1.png" class="bordered">
+        </div>
+
+        <p class="bottom5px">解释一下新出现的名词：</p>
+        <ul class="top">
+          <li><span class="input-font">干(Dry)</span> ： 原始输入的声音。</li>
+          <li><span class="input-font">湿(Wet)</span> ： 应用到原始输入中的音频效果的声音。</li>
+          <li><span class="input-font">音效(Audio Effect)</span> ： 通过某种方式创建不同的声音。例如，延时是把输入信号记录到音频存储介质中，然后过段时间再播放出来的一种音效；混响是一个声音产生之后声音持续性的一种音效。</li>
+        </ul>
+
+        <p class="bottom5px">这些节点的角色</p>
+        <ul class="top">
+          <li><span class="input-font">增益(干)/Gain(Dry)</span> 和 <span class="input-font">增益(湿)/Gain(Wet)</span> : 控制原始声音和音效声音的比率。</li>
+          <li><span class="input-font">延时</span> ： 一段时间之后回放声音。</li>
+          <li><span class="input-font">增益反馈/Gain(Feedback)</span> ：反馈延时效果音到原始音源中。</li>
+        </ul>
+        
+        <codelab-snippet>
+&lt;script type="text/javascript">
+  var audioctx = new AudioContext();
+ 
+  var buffer = null;
+  var src = null;
+  var input = audioctx.createGain(); 
+  var delay = audioctx.createDelay(); 
+  var wetgain = audioctx.createGain(); 
+  var drygain = audioctx.createGain(); 
+  var feedback = audioctx.createGain(); 
+
+  input.connect(delay);
+  input.connect(drygain);
+  delay.connect(wetgain);
+  delay.connect(feedback);
+  feedback.connect(delay);
+  wetgain.connect(audioctx.destination);
+  drygain.connect(audioctx.destination);
+
+  const LoadSample = (ctx, url) =&gt; {
+    fetch(url).then( response =&gt; {
+      return response.arrayBuffer();
+    }).then( arrayBuffer =&gt; {
+      ctx.decodeAudioData(arrayBuffer, (b) =&gt; {buffer=b;}, () =&gt; {});
+      document.querySelector("button#playsound").removeAttribute("disabled");
+    });
+  }
+  LoadSample(audioctx, "./loop.wav");
+&lt;/script></codelab-snippet> 
+
+        <p class="bottom5px">节点图解释：</p>
+        <ul class="top">
+          <li>连接输入到 <span class="input-font">Delay</span> 和 <span class="input-font">Gain(Dry)</span></li>
+          <li>连接输出从 <span class="input-font">Delay</span> 到 <span class="input-font">Gain(Wet)</span></li>
+          <li>连接输出从 <span class="input-font">Delay</span> 到 <span class="input-font">Gain(Feedback)</span></li>
+          <li>连接输出从 <span class="input-font">Gain(Feedback)</span> 到 <span class="input-font">Delay</span></li>
+        </ul>
+
+        <p class="bottom5px">最后编写按钮的事件处理函数。<br>
+          之前的事件处理函数我们是写在 HTML 里的，现在开始我们写在 JavaScript 里。</p>
+        <codelab-snippet>
+&lt;script type="text/javascript">
+  const Setup = () =&gt; {
+    var bypass = document.getElementById("bypass").checked;
+    delay.delayTime.value = parseFloat(document.getElementById("time").value);
+    feedback.gain.value = parseFloat(document.getElementById("feedback").value);
+    var mix = parseFloat(document.getElementById("mix").value);
+    if(bypass) mix = 0;
+      wetgain.gain.value = mix;
+      drygain.gain.value = 1 - mix;
+  }
+
+  document.querySelector("button#playsound").addEventListener("click", (event) =&gt; {
+    var label; 
+    if(event.target.innerHTML=="Stop") {
+      src.stop(0);
+      label="Start";
+    } else {
+      src = audioctx.createBufferSource();
+      src.buffer = buffer;
+      src.loop = true;
+      src.connect(input);
+      src.start(0);
+      label="Stop";
+    }
+    event.target.innerHTML=label;
+  });
+  document.querySelector("input#bypass").addEventListener("change", Setup);
+  document.querySelector("input#time").addEventListener("change", Setup);
+  document.querySelector("input#feedback").addEventListener("change", Setup);
+  document.querySelector("input#mix").addEventListener("change", Setup);
+
+  Setup();
+&lt;/script></codelab-snippet>
+
+        <p>添加完上面三段代码后，运行应用程序。点击 <button id="step6">Start</button> 按钮播放声音，修改参数、勾选或取消勾选 ByPass 复选框改变 depth 以及开启或关闭延时效果。</p>
+        <ul class="top">
+          <li><span class="input-font">Bypass: <input type="checkbox" id="step6bypass"></span></li> 
+        </ul>
+
+        <p>和添加延迟节点的方法一样，添加下面的节点可以获得对应的音效：</p>
+        <ul class="top">
+          <li><span class="input-font">PannerNode</span> ： 分配声音到每一个扬声器</li> 
+          <li><span class="input-font">BiquadFilterNode</span> ： 过滤声音 （ 例如: 低通, 高通, 等）</li> 
+          <li><span class="input-font">GainNode</span> ： 控制振幅 （控制音量）</li> 
+        </ul>
+
+      </codelab-article>
+
+
+      <!-- 7 -->
+      <codelab-article step_label="可视化声音文件" duration="7:00">
+        <p><span class="input-font">Analyser node</span> 提供了声音可视化的功能。使用这个节点可视化声音非常简单，让我们开始吧。</p>
+        <p>我们用上一步用过的 <a href="contents/loop.wav"><span class="input-font">loop.wav</span></a> 文件来分析声音。
+          <p>如果你还没有下载这个文件，请从 <a href="contents/loop.wav"><span class="input-font">这里</span></a> 下载，并把它拖放到 Chrome Dev Editor 左侧面板的项目中。</p>
+        <div class="flex-center">
+          <img src="./images/webaudio-02.png" width="580" class="bordered">
+        </div>
+
+        <p>接下来删除在上一步添加到 <span class="input-font">index.html</span> 中的代码，然后把下面的 HTML 代码先添加到 <span class="input-font">index.html</span> 中。</p>
+        <codelab-snippet>
+&lt;button id="playsound" disabled>Play&lt;/button>&lt;br/>
+&lt;table>
+  &lt;tr>&lt;td>Frequency/TimeDomain : &lt;/td>&lt;td>&lt;select id="mode" >&lt;option>Frequency&lt;/option>&lt;option>TimeDomain&lt;/option>&lt;/select>&lt;/td>&lt;/tr>
+  &lt;tr>&lt;td>SmoothingTimeConstant : &lt;/td>&lt;td>&lt;input type="text" id="smoothing" value="0.9"/>&lt;/td>&lt;/tr>
+  &lt;tr>&lt;td>MinDecibels : &lt;/td>&lt;td>&lt;input type="text" id="min"/>&lt;/td>&lt;/tr>
+  &lt;tr>&lt;td>MaxDecibels : &lt;/td>&lt;td>&lt;input type="text" id="max"/>&lt;/td>&lt;/tr>
+&lt;/table>
+&lt;br/>&lt;br/>
+&lt;canvas id="graph" width="512" height="256">&lt;/canvas></codelab-snippet>
+        
+        <p>因为可视化输入源不需要添加任何音效，所以节点图如下。<br>
+          在 <span class="input-font">BufferSource</span> 后面添加 <span class="input-font">Analyser</span> 节点。
+        </p>
+        <div class="flex-center">
+          <img src="./images/analyser.png" class="bordered">
+        </div>
+
+        <p class="bottom5px">从 <span class="input-font">Analyser</span> 节点获取数据，添加画图过程如下：</p>
+        <codelab-snippet>
+&lt;script type="text/javascript">
+var audioctx = new AudioContext();
+
+var buffer = null;
+var src = null;
+const LoadSample = (ctx, url) =&gt; {
+  fetch(url).then( response =&gt; {
+    return response.arrayBuffer();
+  }).then( arrayBuffer =&gt; {
+    ctx.decodeAudioData(arrayBuffer, (b) =&gt; {buffer=b;}, () =&gt; {});
+    document.querySelector("button#playsound").removeAttribute("disabled");
+  });
+}
+LoadSample(audioctx, "./loop.wav");
+
+var mode = 0;
+var timerId;
+var analyser = audioctx.createAnalyser();
+analyser.fftSize = 1024;
+document.getElementById("min").value = analyser.minDecibels;
+document.getElementById("max").value = analyser.maxDecibels;
+var ctx = document.getElementById("graph").getContext("2d");
+
+const DrawGraph = () =&gt; {
+    ctx.fillStyle = "rgba(34, 34, 34, 1.0)";
+    ctx.fillRect(0, 0, 512, 256);
+    ctx.strokeStyle="rgba(255, 255, 255, 1)";
+    var data = new Uint8Array(512);
+    if(mode == 0) analyser.getByteFrequencyData(data); //Spectrum Data
+    else analyser.getByteTimeDomainData(data); //Waveform Data
+    if(mode!=0) ctx.beginPath();
+    for(var i = 0; i < 256; ++i) {
+        if(mode==0) {
+            ctx.fillStyle = "rgba(204, 204, 204, 0.8)";
+            ctx.fillRect(i*2, 256 - data[i], 1, data[i]);
+        } else {
+            ctx.lineTo(i*2, 256 - data[i]);
+        }
+    }
+    if(mode!=0) {
+        ctx.stroke();
+    }
+    requestAnimationFrame(DrawGraph);
+}
+timerId=requestAnimationFrame(DrawGraph);
+
+const Setup = () =&gt; {
+    mode = document.getElementById("mode").selectedIndex;
+    analyser.minDecibels = parseFloat(document.getElementById("min").value);
+    analyser.maxDecibels = parseFloat(document.getElementById("max").value);
+    analyser.smoothingTimeConstant = parseFloat(document.getElementById("smoothing").value);
+}
+Setup();
+&lt;/script></codelab-snippet>
+
+        <p>
+          <code>DrawGraph()</code> 函数负责画图，当窗口中的参数更新时也用这个函数更新图形。解释如下：</p>
+        <ul style="list-style-type: decimal">
+          <li>创建 <span class="input-font">analyser</span> <code>createAnalyser();</code></li>
+          <li>指定 FFT 数据大小为 <span class="input-font">fftSize</span></li>
+          <li>运行动画循环 <code>requestAnimationFrame();</code>，在每一次迭代中从 <span class="input-font">Analyser</span> 节点获取数据，并在 <span class="input-font">canvas</span> 上更新图形实现数值的可视化。</li>
+        </ul>
+
+        <p class="bottom5px">最后添加点击按钮的事件处理函数。</p>
+        <codelab-snippet>
+&lt;script type="text/javascript">
+document.querySelector("button#playsound").addEventListener("click", (event) =&gt; {
+    var label; 
+    if(event.target.innerHTML=="Stop") {
+        src.stop(0);
+        cancelAnimationFrame(timerId);
+        label="Start";
+    } else {
+        src = audioctx.createBufferSource();
+        src.buffer = buffer;
+        src.loop = true;
+        src.connect(audioctx.destination);
+        src.connect(analyser);
+        src.start(0);
+        label="Stop";
+    }
+    event.target.innerHTML=label;
+});
+document.querySelector("select#mode").addEventListener("change", Setup);
+document.querySelector("input#smoothing").addEventListener("change", Setup);
+document.querySelector("input#min").addEventListener("change", Setup);
+document.querySelector("input#max").addEventListener("change", Setup);
+&lt;/script></codelab-snippet>
+        
+        <p>添加这三段代码之后运行应用程序。点击 <button id="step7">Start</button> 按钮播放歌曲，图形会显示在 <span class="input-font">canvas</span> 中。修改 <span class="input-font">Frequency/TimeDomain</span> 参数会更新图形。<br>
+          <span class="notice-01">※ 在本页面中，点击下面的图形区域会改变它的显示类型(<span class="input-font">Frequency/TimeDomain</span>) 。</span> 
+        </p>
+          
+        <div class="flex-center">
+          <canvas id="step7canvas" class="step7" width="512" height="256"></canvas>
+        </div>
+
+      </codelab-article>
+
+      <!-- 8 -->
+      <codelab-article step_label="可视化麦克输入" duration="6:00">
+        <p>这一步中，我们要可视化来自麦克的实时输入数据。</p>
+
+        <p>这里我们要添加新代码到上一步的代码中，所以请不要删除旧代码。<br/>
+        添加下面的 HTML 到 <span class="input-font">index.html</span> 中，添加的位置不重要。</p>
+        <codelab-snippet>
+&lt;button id="startmic">Start Mic&lt;/button>&lt;br/></codelab-snippet>
+
+        <p>接着添加下面的 JavaScript 代码。和前面一样，放置的位置不重要。</p>
+        <codelab-snippet>
+&lt;script type="text/javascript">
+var getUserMedia = navigator.getUserMedia ? 'getUserMedia' :
+    navigator.webkitGetUserMedia ? 'webkitGetUserMedia' :
+    navigator.mozGetUserMedia ? 'mozGetUserMedia' :
+    navigator.msGetUserMedia ? 'msGetUserMedia' :
+    undefined;
+var astream, micsrc;
+var conditions={audio:true, video:false};
+const Mic = () =&gt; {
+    navigator[getUserMedia](
+        conditions,
+        (stream) =&gt; {
+            astream=stream;
+            micsrc=audioctx.createMediaStreamSource(stream);
+            micsrc.connect(audioctx.destination);
+            micsrc.connect(analyser);
+        },
+        (e) =&gt; { console.error(e); }
+    );
+}
+
+// event handler
+document.querySelector("button#startmic").addEventListener("click", (event) =&gt; {
+    var label;
+    if(event.target.innerHTML=="Start Mic") {
+        Mic();
+        label="Stop Mic";
+    } else {
+        (astream.getAudioTracks())[0].stop();
+        label="Start Mic";
+    }
+    event.target.innerHTML=label;
+});
+&lt;/script></codelab-snippet>
+
+        <p>由于可视化麦克输入不需要添加任何音效，所以节点图如下。<br>
+        <div class="flex-center">
+          <img src="./images/analyser_mic.png" class="bordered">
+        </div>
+
+        <p>算法如下：</p>
+        <ul style="list-style-type: decimal">
+          <li>获取麦克输入 <code>getUserMedia();</code></li>
+          <li>从 <span class="input-font">stream</span> 中获得音频数据流 <code>audioctx.createMediaStreamSource(stream)</code></li>
+          <li>连接音频数据流到 <span class="input-font">analyser</span> <code>micsrc.connect(analyser);</code></li>
+          <li>连接音频数据流到 <span class="input-font">audioctx.destination</span> 完成节点图 <code>micsrc.connect(audioctx.destination);</code></li>
+          <li>点击按钮开始可视化麦克输入</li>
+        </ul>
+        
+        <p>点击 <button id="step8">Start Mic</button> 按钮开始执行应用程序。修改参数(如 <span class="input-font">Frequency/TimeDomain</span>) 更新图形样式。<br>
+          <span class="notice-01">※ 在这里，点击图形区域就会改变样式。</span> 
+        </p>
+          
+        <div class="flex-center">
+          <canvas id="step8canvas" class="step7" width="512" height="256"></canvas>
+        </div>
+
+      </codelab-article>
+
+
+      <!-- 9 -->
+      <codelab-article step_label="使用 Convolution" duration="5:00">
+        <p>通过卷积(convoluting) 音频输入/文件和脉冲响应音频文件源添加音效。<br>
+          听上去很难，但是 Web Audio API 默认提供了 <span class="input-font">ConvolverNode</span> 使得卷积非常容易。
+        </p>
+
+        <p>从这里下载脉冲响应文件 <a href="contents/ir/s1_r1_bd.wav"><span class="input-font">s1_r1_bd.wav</span></a>，然后把它拖到 Chrome Dev Editor 左侧面板的项目中。</p>
+        <div class="flex-center">
+          <img src="./images/webaudio-02.png" width="580" class="bordered">
+        </div>
+        <p>
+          <span class="notice-01">※ 这个文件(<span class="input-font">s1_r1_bd.wav</span>) 仅在 <a href="http://www.acoustics.hut.fi/projects/poririrs/" taeget="_blank">这里</a> 提供，如果是非商业用途可以免费使用。</span> 
+        </p>
+
+        <p>删除之前添加到 <span class="input-font">index.html</span> 里的代码，然后添加下面新的 HTML 到 <span class="input-font">index.html</span> 中(位置不重要)。</p>
+        <codelab-snippet>
+&lt;button id="playsound" disabled>Start&lt;/button>&lt;br/>
+ReverbLevel : &lt;input type="range" id="revlevel" min="0" max="100" value="50"/>
+  &lt;span id="revdisp">50&lt;/span></codelab-snippet>
+
+        <p class="bottom5px">接着添加 JavaScript 代码</p>
+        <codelab-snippet>
+&lt;script type="text/javascript">
+var audioctx = new AudioContext();
+var files = [
+    "loop.wav",
+    "s1_r1_bd.wav",
+];
+var source = null;
+var convolver = audioctx.createConvolver();
+var revlevel = audioctx.createGain();
+revlevel.gain.value=0.5;
+convolver.connect(revlevel);
+revlevel.connect(audioctx.destination);
+var buffers = [];
+var loadidx = 0;
+
+const LoadSample = (ctx, idx) =&gt; {
+  fetch(files[idx]).then( response =&gt; {
+    return response.arrayBuffer();
+  }).then( arrayBuffer =&gt; {
+    ctx.decodeAudioData(arrayBuffer, (b) =&gt; {buffers[idx]=b;}, () =&gt; {});
+    if(files.length==buffers.length) {
+      document.querySelector("button#playsound").removeAttribute("disabled");
+    }
+  });
+}
+
+for(var i=0; i&lt;files.length; i++) {
+    LoadSample(audioctx, i);
+}
+&lt;/script></codelab-snippet>
+
+        <p><span class="input-font">Convolver Node</span> 与输入源和 <span class="input-font">destination</span> 交互。这样节点图像这样：</p>
+        <div class="flex-center">
+          <img src="./images/convolver1.png" class="bordered">
+        </div>
+
+        <p class="bottom5px">最后，添加点击按钮的事件处理函数。<br>
+        <codelab-snippet>
+&lt;script type="text/javascript">
+document.querySelector("button#playsound").addEventListener("click", (event) =&gt; {
+    var label;
+    if(event.target.innerHTML=="Stop") {
+        src.stop(0);
+        label="Start";
+    } else {
+        src = audioctx.createBufferSource();
+        src.buffer = buffers[0];
+        convolver.buffer = buffers[1];
+        src.loop = true;
+        src.connect(audioctx.destination);
+        src.connect(convolver);
+        src.start(0);
+        label="Stop";
+    }
+    event.target.innerHTML=label;
+});
+document.querySelector("input#revlevel").addEventListener("change", (event) =&gt; {
+    var lev=event.target.value;
+    revlevel.gain.value=parseInt(lev)*0.01;
+    document.querySelector("#revdisp").innerHTML=lev;
+});
+&lt;/script></codelab-snippet>
+
+        <p>点击 <button id="step9">Start</button><paper-progress value="0" id="step9progress" class="step9 middle hidden"></paper-progress> 按钮应用程序就开始播放音频文件的声音。使用下面的滑块可以改变音效的等级。</p>
+        <ul style="list-style-type: none">
+          <li><span class="input-font">ReverbLevel : <input type="range" id="step9revlevel" min="0" max="100" value="50" style="width:200px;" class="middle"/><span id="revdisp">50</span></span></li>
+        </ul>
+      </codelab-article>
+
+
+    </codelab-pack>
+    <script src="./js/webaudio-demo.js"></script>
+</template>
